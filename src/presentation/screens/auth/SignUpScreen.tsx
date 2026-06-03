@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AuthSessionService } from '../../../application/AuthSessionService';
+import { UserRole } from '../../../domain/entities/UserRole';
 import { ScreenContainer } from '../../components/layout/ScreenContainer';
 import { theme } from '../../theme/Theme';
 
@@ -18,7 +19,6 @@ export function SignUpScreen({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'teacher' | 'student'>('student');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,7 +27,12 @@ export function SignUpScreen({
     setIsSubmitting(true);
 
     try {
-      await authSessionService.signUp({ name, email, password, role });
+      await authSessionService.signUp({
+        name,
+        email,
+        password,
+        role: UserRole.Student,
+      });
       onAuthenticated();
     } catch {
       setError('Unable to create account. Check the form and try again.');
@@ -39,7 +44,7 @@ export function SignUpScreen({
   return (
     <ScreenContainer testID="sign-up-screen">
       <Text style={styles.title}>Create account</Text>
-      <Text style={styles.subtitle}>Start as a student or teacher.</Text>
+      <Text style={styles.subtitle}>Create your TeNow account to continue.</Text>
       <View style={styles.form}>
         <TextInput
           onChangeText={setName}
@@ -65,22 +70,6 @@ export function SignUpScreen({
           testID="sign-up-password"
           value={password}
         />
-        <View style={styles.roleRow}>
-          <Pressable
-            onPress={() => setRole('student')}
-            style={[styles.roleButton, role === 'student' && styles.roleActive]}
-            testID="role-student"
-          >
-            <Text style={styles.roleText}>Student</Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setRole('teacher')}
-            style={[styles.roleButton, role === 'teacher' && styles.roleActive]}
-            testID="role-teacher"
-          >
-            <Text style={styles.roleText}>Teacher</Text>
-          </Pressable>
-        </View>
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Pressable
           disabled={isSubmitting}
@@ -125,28 +114,6 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.body,
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.md,
-  },
-  roleRow: {
-    flexDirection: 'row',
-    gap: theme.spacing.sm,
-  },
-  roleButton: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-    borderRadius: 12,
-    borderWidth: 1,
-    paddingVertical: theme.spacing.md,
-  },
-  roleActive: {
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primaryMuted,
-  },
-  roleText: {
-    color: theme.colors.text,
-    fontSize: theme.typography.body,
-    fontWeight: '600',
   },
   error: {
     color: theme.colors.danger,
