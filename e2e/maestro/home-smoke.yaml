@@ -1,0 +1,16 @@
+# TeNow mobile smoke flow (run with Maestro + Expo Go)
+# Prerequisites: npx expo start, then open the project in Expo Go on device/emulator
+#
+# Install Maestro: https://maestro.mobile.dev/docs/getting-started/installing-maestro
+# Run: npm run test:e2e:mobile
+
+appId: host.exp.exponent
+---
+- launchApp
+- tapOn:
+    text: "TeNow"
+    optional: true
+- assertVisible: "Welcome to TeNow"
+- assertVisible: "Class TA"
+- assertVisible: "Teacher Assistant"
+- assertVisible: "Process trail"

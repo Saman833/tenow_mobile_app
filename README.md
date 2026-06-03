@@ -75,6 +75,39 @@ Point the mobile app at your local API base URL (configure in app env when wired
 
 ---
 
+## Project structure
+
+```
+src/
+  application/     AppBootstrap, ServiceContainer (DI)
+  core/            TenowConfig, AppError
+  domain/          User entity, UserRole
+  infrastructure/  HttpClient
+  presentation/    screens, components, theme
+tests/
+  smoke/           fast render and wiring checks
+  unit/            domain and infrastructure tests
+e2e/
+  web/             Playwright end-to-end (web target)
+  maestro/         Maestro flows for Expo Go / device
+```
+
+---
+
+## Testing
+
+```bash
+npm test              # all Jest tests
+npm run test:smoke    # smoke tests only
+npm run test:coverage # unit + smoke with coverage thresholds
+npm run test:e2e      # Playwright web E2E (starts Expo web automatically)
+npm run test:e2e:mobile  # Maestro on device (requires Maestro CLI + Expo Go)
+```
+
+Coverage thresholds are enforced at 70% lines/functions/statements and 60% branches.
+
+---
+
 ## Project status
 
 Early scaffold. Core screens — auth, class list, assignment detail, Class TA chat, submission flow — are not yet implemented. Product scope follows **Tier 1** in `docs/tenow-strategy.md`: essay submissions with process trail, Class TA with AI policy enforcement, and rubric-aligned feedback surfaces.
