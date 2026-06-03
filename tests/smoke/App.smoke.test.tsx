@@ -14,15 +14,15 @@ describe('App smoke', () => {
     expect(screen.getByTestId('home-screen')).toBeTruthy();
     expect(screen.getByTestId('tenow-logo')).toBeTruthy();
     expect(screen.getByTestId('home-welcome-title')).toHaveTextContent(
-      'Welcome to TeNow',
+      'Welcome back',
     );
   });
 
-  it('shows product feature highlights', () => {
+  it('shows get started actions from the dashboard', () => {
     render(<App />);
 
-    expect(screen.getByText(/Class TA/)).toBeTruthy();
-    expect(screen.getByText(/Teacher Assistant/)).toBeTruthy();
-    expect(screen.getByText(/Process trail/)).toBeTruthy();
+    expect(screen.getByText('Join a class')).toBeTruthy();
+    expect(screen.getByText('Create a class')).toBeTruthy();
+    expect(screen.getByText('Create organization')).toBeTruthy();
   });
 });

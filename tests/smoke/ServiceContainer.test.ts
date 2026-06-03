@@ -12,6 +12,6 @@ describe('ServiceContainer smoke', () => {
     const viewModel = container.createHomeViewModel();
 
     expect(viewModel.appName).toBe('TeNow');
-    expect(viewModel.tagline).toBe('Test tagline');
+    expect(viewModel.actions).toHaveLength(3);
   });
 });

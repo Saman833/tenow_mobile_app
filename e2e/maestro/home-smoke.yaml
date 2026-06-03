@@ -10,7 +10,7 @@ appId: host.exp.exponent
 - tapOn:
     text: "TeNow"
     optional: true
-- assertVisible: "Welcome to TeNow"
-- assertVisible: "Class TA"
-- assertVisible: "Teacher Assistant"
-- assertVisible: "Process trail"
+- assertVisible: "Welcome back"
+- assertVisible: "Join a class"
+- assertVisible: "Create a class"
+- assertVisible: "Create organization"
