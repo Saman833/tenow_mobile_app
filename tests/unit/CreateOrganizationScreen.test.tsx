@@ -7,6 +7,7 @@ describe('CreateOrganizationScreen', () => {
   it('submits organization creation', async () => {
     const viewModel = {
       createOrganization: jest.fn().mockResolvedValue({ id: 'org-1' }),
+      listOrganizations: jest.fn().mockResolvedValue([]),
     } as unknown as CreateOrganizationViewModel;
     const authSessionService = {
       restoreUser: jest.fn().mockResolvedValue({ id: 'user-1' }),
@@ -35,5 +36,37 @@ describe('CreateOrganizationScreen', () => {
       'school',
     );
     expect(authSessionService.restoreUser).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows existing organizations on the organization screen', async () => {
+    const viewModel = {
+      createOrganization: jest.fn(),
+      listOrganizations: jest.fn().mockResolvedValue([
+        {
+          orgRole: 'admin',
+          organization: {
+            id: 'org-1',
+            name: 'Lincoln High',
+            kind: 'school',
+          },
+        },
+      ]),
+    } as unknown as CreateOrganizationViewModel;
+
+    render(
+      <CreateOrganizationScreen
+        viewModel={viewModel}
+        authSessionService={
+          { restoreUser: jest.fn() } as unknown as AuthSessionService
+        }
+        onCreated={jest.fn()}
+        onCancel={jest.fn()}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId('create-org-existing-org-1')).toBeTruthy(),
+    );
+    expect(screen.getByText('Lincoln High')).toBeTruthy();
   });
 });

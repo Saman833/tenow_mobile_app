@@ -1,5 +1,9 @@
 import { BackendRoutes, HttpClient } from '#shared';
-import { CreateOrganizationInput, Organization } from '../model/Organization';
+import {
+  CreateOrganizationInput,
+  Organization,
+  OrganizationMembership,
+} from '../model/Organization';
 
 export class OrganizationsApi {
   constructor(
@@ -12,6 +16,12 @@ export class OrganizationsApi {
       method: 'POST',
       body: input,
     });
+  }
+
+  listMine(): Promise<OrganizationMembership[]> {
+    return this.httpClient.request<OrganizationMembership[]>(
+      this.routes.identityMeOrganizations,
+    );
   }
 
   switchOrg(orgId: string): Promise<void> {

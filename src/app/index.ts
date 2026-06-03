@@ -14,5 +14,4 @@ export type {
   ClassesStackParamList,
   MainTabParamList,
   RootStackParamList,
-  SettingsStackParamList,
 } from './navigation/AppRoutes';

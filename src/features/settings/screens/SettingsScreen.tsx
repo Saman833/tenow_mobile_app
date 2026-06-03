@@ -1,4 +1,3 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StyleSheet, View } from 'react-native';
 import {
   Button,
@@ -6,19 +5,16 @@ import {
   ScreenHeader,
   spacing,
 } from '#shared';
-import {
-  SettingsRoutes,
-  SettingsStackParamList,
-} from '#app/navigation/AppRoutes';
 
-type SettingsScreenProps = NativeStackScreenProps<
-  SettingsStackParamList,
-  typeof SettingsRoutes.SettingsHome
-> & {
+interface SettingsScreenProps {
+  onCreateOrganization: () => void;
   onLogout?: () => void;
-};
+}
 
-export function SettingsScreen({ navigation, onLogout }: SettingsScreenProps) {
+export function SettingsScreen({
+  onCreateOrganization,
+  onLogout,
+}: SettingsScreenProps) {
   return (
     <ScreenContainer testID="settings-screen">
       <ScreenHeader
@@ -30,7 +26,7 @@ export function SettingsScreen({ navigation, onLogout }: SettingsScreenProps) {
           label="Create organization"
           variant="secondary"
           testID="settings-create-org"
-          onPress={() => navigation.navigate(SettingsRoutes.CreateOrganization)}
+          onPress={onCreateOrganization}
         />
         <Button
           label="Log out"
@@ -44,8 +40,17 @@ export function SettingsScreen({ navigation, onLogout }: SettingsScreenProps) {
 }
 
 const styles = StyleSheet.create({
+  orgCard: {
+    marginTop: spacing.xl,
+  },
+  orgList: {
+    gap: spacing.sm,
+  },
+  orgRow: {
+    gap: spacing.xs,
+  },
   actions: {
     gap: spacing.md,
-    marginTop: spacing.xl,
+    marginTop: spacing.md,
   },
 });

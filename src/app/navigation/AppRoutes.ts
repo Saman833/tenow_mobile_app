@@ -3,6 +3,7 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 export const RootRoutes = {
   AuthStack: 'AuthStack',
   MainTabs: 'MainTabs',
+  CreateOrganization: 'CreateOrganization',
 } as const;
 
 export const AuthRoutes = {
@@ -22,13 +23,13 @@ export const ClassRoutes = {
 } as const;
 
 export const SettingsRoutes = {
-  SettingsHome: 'SettingsHome',
   CreateOrganization: 'CreateOrganization',
 } as const;
 
 export type RootStackParamList = {
   [RootRoutes.AuthStack]: undefined;
-  [RootRoutes.MainTabs]: undefined;
+  [RootRoutes.MainTabs]: NavigatorScreenParams<MainTabParamList> | undefined;
+  [RootRoutes.CreateOrganization]: undefined;
 };
 
 export type AuthStackParamList = {
@@ -36,15 +37,10 @@ export type AuthStackParamList = {
   [AuthRoutes.SignUp]: undefined;
 };
 
-export type SettingsStackParamList = {
-  [SettingsRoutes.SettingsHome]: undefined;
-  [SettingsRoutes.CreateOrganization]: undefined;
-};
-
 export type MainTabParamList = {
   [TabRoutes.Home]: undefined;
   [TabRoutes.Classes]: undefined;
-  [TabRoutes.Settings]: NavigatorScreenParams<SettingsStackParamList> | undefined;
+  [TabRoutes.Settings]: undefined;
 };
 
 export type ClassesStackParamList = {
@@ -57,5 +53,4 @@ export class AppRouteRegistry {
   readonly authInitialRoute = AuthRoutes.SignIn;
   readonly tabInitialRoute = TabRoutes.Home;
   readonly classesInitialRoute = ClassRoutes.ClassList;
-  readonly settingsInitialRoute = SettingsRoutes.SettingsHome;
 }

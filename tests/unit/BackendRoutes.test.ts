@@ -12,10 +12,12 @@ describe('BackendRoutes', () => {
     expect(routes.authMe).toBe('/auth/me');
     expect(routes.authSwitchOrg).toBe('/auth/switch-org');
     expect(routes.identityMe).toBe('/identity/me');
+    expect(routes.identityMeOrganizations).toBe('/identity/me/organizations');
     expect(routes.organizations).toBe('/organizations');
   });
 
   it('matches backend classroom routes', () => {
+    expect(routes.classrooms).toBe('/classrooms');
     expect(routes.classroomsMine).toBe('/classrooms/mine');
     expect(routes.classroomInvitationsMine).toBe(
       '/classrooms/invitations/mine',

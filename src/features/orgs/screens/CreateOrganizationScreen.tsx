@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import {
   AppText,
   Button,
+  Card,
   colors,
   FormField,
   radii,
@@ -12,7 +13,10 @@ import {
 } from '#shared';
 import type { AuthSessionService } from '#features/auth';
 import { CreateOrganizationViewModel } from '../view-models/CreateOrganizationViewModel';
-import type { OrganizationKind } from '../model/Organization';
+import type {
+  OrganizationKind,
+  OrganizationMembership,
+} from '../model/Organization';
 
 interface CreateOrganizationScreenProps {
   viewModel: CreateOrganizationViewModel;
@@ -31,6 +35,29 @@ export function CreateOrganizationScreen({
   const [kind, setKind] = useState<OrganizationKind>('school');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [memberships, setMemberships] = useState<OrganizationMembership[]>([]);
+  const [isLoadingOrganizations, setIsLoadingOrganizations] = useState(true);
+  const [organizationsError, setOrganizationsError] = useState<string | null>(
+    null,
+  );
+
+  const loadOrganizations = useCallback(async () => {
+    setIsLoadingOrganizations(true);
+    setOrganizationsError(null);
+
+    try {
+      const result = await viewModel.listOrganizations();
+      setMemberships(result);
+    } catch {
+      setOrganizationsError('Could not load organizations.');
+    } finally {
+      setIsLoadingOrganizations(false);
+    }
+  }, [viewModel]);
+
+  useEffect(() => {
+    loadOrganizations();
+  }, [loadOrganizations]);
 
   const handleSubmit = async () => {
     setError(null);
@@ -55,6 +82,39 @@ export function CreateOrganizationScreen({
         title="Create organization"
         subtitle="Manage multiple classes under one school or team."
       />
+      <Card style={styles.organizationsCard} testID="create-org-existing-list">
+        <AppText variant="subtitle">Your organizations</AppText>
+        {isLoadingOrganizations ? (
+          <AppText variant="body" tone="muted">
+            Loading organizations...
+          </AppText>
+        ) : organizationsError ? (
+          <AppText variant="body" tone="danger">
+            {organizationsError}
+          </AppText>
+        ) : memberships.length === 0 ? (
+          <AppText variant="body" tone="muted">
+            No organizations yet.
+          </AppText>
+        ) : (
+          <View style={styles.organizationList}>
+            {memberships.map((membership) => (
+              <View
+                key={membership.organization.id}
+                style={styles.organizationRow}
+                testID={`create-org-existing-${membership.organization.id}`}
+              >
+                <AppText variant="body" weight="700">
+                  {membership.organization.name}
+                </AppText>
+                <AppText variant="caption" tone="muted">
+                  {membership.orgRole}
+                </AppText>
+              </View>
+            ))}
+          </View>
+        )}
+      </Card>
       <View style={styles.form}>
         <FormField
           label="Organization name"
@@ -124,6 +184,15 @@ function KindOption({ label, selected, testID, onPress }: KindOptionProps) {
 }
 
 const styles = StyleSheet.create({
+  organizationsCard: {
+    marginTop: spacing.xl,
+  },
+  organizationList: {
+    gap: spacing.sm,
+  },
+  organizationRow: {
+    gap: spacing.xs,
+  },
   form: {
     gap: spacing.md,
     marginTop: spacing.xl,

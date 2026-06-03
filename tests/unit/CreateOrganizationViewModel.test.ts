@@ -31,4 +31,17 @@ describe('CreateOrganizationViewModel', () => {
     });
     expect(organizationsApi.switchOrg).toHaveBeenCalledWith('org-1');
   });
+
+  it('lists current organizations', async () => {
+    const organizationsApi = {
+      create: jest.fn(),
+      switchOrg: jest.fn(),
+      listMine: jest.fn().mockResolvedValue([]),
+    } as unknown as OrganizationsApi;
+    const viewModel = new CreateOrganizationViewModel(organizationsApi);
+
+    await expect(viewModel.listOrganizations()).resolves.toEqual([]);
+
+    expect(organizationsApi.listMine).toHaveBeenCalledTimes(1);
+  });
 });

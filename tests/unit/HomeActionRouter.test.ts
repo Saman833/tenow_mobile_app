@@ -1,4 +1,4 @@
-import { SettingsRoutes, TabRoutes } from '#app/navigation/AppRoutes';
+import { RootRoutes, TabRoutes } from '#app/navigation/AppRoutes';
 import { HomeActionRouter } from '#app/navigation/HomeActionRouter';
 
 describe('HomeActionRouter', () => {
@@ -17,8 +17,8 @@ describe('HomeActionRouter', () => {
 
   it('routes organization action to create organization screen', () => {
     expect(router.resolve('create-organization')).toEqual({
-      type: 'settingsScreen',
-      screen: SettingsRoutes.CreateOrganization,
+      type: 'createOrganization',
+      route: RootRoutes.CreateOrganization,
     });
   });
 

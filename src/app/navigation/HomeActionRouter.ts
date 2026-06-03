@@ -1,14 +1,11 @@
-import { SettingsRoutes, TabRoutes } from './AppRoutes';
+import { RootRoutes, TabRoutes } from './AppRoutes';
 import type { MainTabParamList } from './AppRoutes';
 
 type MainTabRouteName = keyof MainTabParamList;
 
 export type HomeActionTarget =
   | { type: 'tab'; route: MainTabRouteName }
-  | {
-      type: 'settingsScreen';
-      screen: typeof SettingsRoutes.CreateOrganization;
-    };
+  | { type: 'createOrganization'; route: typeof RootRoutes.CreateOrganization };
 
 export class HomeActionRouter {
   resolve(actionId: string): HomeActionTarget | null {
@@ -18,8 +15,8 @@ export class HomeActionRouter {
         return { type: 'tab', route: TabRoutes.Classes };
       case 'create-organization':
         return {
-          type: 'settingsScreen',
-          screen: SettingsRoutes.CreateOrganization,
+          type: 'createOrganization',
+          route: RootRoutes.CreateOrganization,
         };
       default:
         return null;

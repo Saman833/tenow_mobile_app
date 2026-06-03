@@ -9,6 +9,7 @@ export class BackendRoutes {
   readonly identityMe = '/identity/me';
   readonly identityMeOrganizations = '/identity/me/organizations';
   readonly organizations = '/organizations';
+  readonly classrooms = '/classrooms';
   readonly classroomsMine = '/classrooms/mine';
   readonly classroomInvitationsMine = '/classrooms/invitations/mine';
   readonly acceptClassroomInvitation = '/classrooms/invitations/accept';

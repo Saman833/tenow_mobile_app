@@ -31,4 +31,18 @@ describe('OrganizationsApi', () => {
       body: { orgId: 'org-1' },
     });
   });
+
+  it('lists current user organizations', async () => {
+    const httpClient = {
+      request: jest.fn().mockResolvedValue([]),
+    } as unknown as HttpClient;
+    const routes = new BackendRoutes();
+    const api = new OrganizationsApi(httpClient, routes);
+
+    await expect(api.listMine()).resolves.toEqual([]);
+
+    expect(httpClient.request).toHaveBeenCalledWith(
+      routes.identityMeOrganizations,
+    );
+  });
 });

@@ -1,5 +1,9 @@
 import { BackendRoutes, HttpClient } from '#shared';
-import { Classroom, ClassroomInvitation } from '../model/Classroom';
+import {
+  Classroom,
+  ClassroomInvitation,
+  CreateClassroomInput,
+} from '../model/Classroom';
 
 export class ClassroomsApi {
   constructor(
@@ -9,6 +13,17 @@ export class ClassroomsApi {
 
   listMine(): Promise<Classroom[]> {
     return this.httpClient.request<Classroom[]>(this.routes.classroomsMine);
+  }
+
+  listForActiveOrganization(): Promise<Classroom[]> {
+    return this.httpClient.request<Classroom[]>(this.routes.classrooms);
+  }
+
+  create(input: CreateClassroomInput): Promise<Classroom> {
+    return this.httpClient.request<Classroom>(this.routes.classrooms, {
+      method: 'POST',
+      body: input,
+    });
   }
 
   listInvitations(): Promise<ClassroomInvitation[]> {

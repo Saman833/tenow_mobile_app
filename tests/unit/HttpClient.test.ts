@@ -10,7 +10,7 @@ describe('HttpClient', () => {
     jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       status: 200,
-      json: async () => payload,
+      text: async () => JSON.stringify(payload),
     } as Response);
 
     const client = new HttpClient('http://localhost:3000');
@@ -21,7 +21,7 @@ describe('HttpClient', () => {
     const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       status: 200,
-      json: async () => ({ ok: true }),
+      text: async () => JSON.stringify({ ok: true }),
     } as Response);
 
     const client = new HttpClient('http://localhost:3000', async () => 'token-123');
@@ -45,5 +45,16 @@ describe('HttpClient', () => {
 
     const client = new HttpClient('http://localhost:3000');
     await expect(client.request('/health')).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('returns undefined for empty successful responses', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () => '',
+    } as Response);
+
+    const client = new HttpClient('http://localhost:3000');
+    await expect(client.request('/auth/switch-org')).resolves.toBeUndefined();
   });
 });

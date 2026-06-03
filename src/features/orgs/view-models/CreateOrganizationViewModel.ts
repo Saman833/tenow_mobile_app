@@ -1,5 +1,9 @@
 import { OrganizationsApi } from '../api/OrganizationsApi';
-import { CreateOrganizationInput, OrganizationKind } from '../model/Organization';
+import {
+  CreateOrganizationInput,
+  OrganizationKind,
+  OrganizationMembership,
+} from '../model/Organization';
 
 export class CreateOrganizationViewModel {
   constructor(private readonly organizationsApi: OrganizationsApi) {}
@@ -37,5 +41,9 @@ export class CreateOrganizationViewModel {
     await this.organizationsApi.switchOrg(org.id);
 
     return { id: org.id };
+  }
+
+  listOrganizations(): Promise<OrganizationMembership[]> {
+    return this.organizationsApi.listMine();
   }
 }
