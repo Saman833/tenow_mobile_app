@@ -6,6 +6,7 @@ export {
   AuthRoutes,
   ClassRoutes,
   RootRoutes,
+  SettingsRoutes,
   TabRoutes,
 } from './navigation/AppRoutes';
 export type {
@@ -13,4 +14,5 @@ export type {
   ClassesStackParamList,
   MainTabParamList,
   RootStackParamList,
+  SettingsStackParamList,
 } from './navigation/AppRoutes';

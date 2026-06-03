@@ -10,7 +10,9 @@ describe('BackendRoutes', () => {
     expect(routes.authSignup).toBe('/auth/signup');
     expect(routes.authLogout).toBe('/auth/logout');
     expect(routes.authMe).toBe('/auth/me');
+    expect(routes.authSwitchOrg).toBe('/auth/switch-org');
     expect(routes.identityMe).toBe('/identity/me');
+    expect(routes.organizations).toBe('/organizations');
   });
 
   it('matches backend classroom routes', () => {

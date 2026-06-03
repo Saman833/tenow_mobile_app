@@ -80,8 +80,8 @@ Point the mobile app at your local API base URL (configure in app env when wired
 ```
 src/
   app/             composition root: bootstrap, DI, navigation
-  features/        auth, home, classes, settings (each exports index.ts)
-  shared/          #shared — config, api, theme, layout, domain types
+  features/        auth, home, classes, settings, orgs (each exports index.ts)
+  shared/          #shared — config, api, design-system tokens/components
 tests/
   smoke/           fast render and wiring checks
   unit/            domain and infrastructure tests

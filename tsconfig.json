@@ -18,7 +18,9 @@
       "#features/classes": ["./src/features/classes/index.ts"],
       "#features/classes/*": ["./src/features/classes/*"],
       "#features/settings": ["./src/features/settings/index.ts"],
-      "#features/settings/*": ["./src/features/settings/*"]
+      "#features/settings/*": ["./src/features/settings/*"],
+      "#features/orgs": ["./src/features/orgs/index.ts"],
+      "#features/orgs/*": ["./src/features/orgs/*"]
     }
   },
   "include": [

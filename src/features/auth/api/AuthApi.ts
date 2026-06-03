@@ -16,6 +16,7 @@ export class AuthApi {
     return this.httpClient.request<AuthSession>(this.routes.authLogin, {
       method: 'POST',
       body: credentials,
+      authenticated: false,
     });
   }
 
@@ -23,6 +24,7 @@ export class AuthApi {
     return this.httpClient.request<AuthSession>(this.routes.authSignup, {
       method: 'POST',
       body: credentials,
+      authenticated: false,
     });
   }
 

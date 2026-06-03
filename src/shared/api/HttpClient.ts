@@ -4,10 +4,16 @@ export interface HttpRequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   headers?: Record<string, string>;
   body?: unknown;
+  authenticated?: boolean;
 }
 
+export type AccessTokenProvider = () => Promise<string | null>;
+
 export class HttpClient {
-  constructor(private readonly baseUrl: string) {}
+  constructor(
+    private readonly baseUrl: string,
+    private readonly getAccessToken?: AccessTokenProvider,
+  ) {}
 
   async request<T>(path: string, options: HttpRequestOptions = {}): Promise<T> {
     const url = `${this.baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
@@ -15,6 +21,14 @@ export class HttpClient {
       Accept: 'application/json',
       ...options.headers,
     };
+
+    if (options.authenticated !== false && this.getAccessToken) {
+      const token = await this.getAccessToken();
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+    }
 
     const init: RequestInit = {
       method: options.method ?? 'GET',

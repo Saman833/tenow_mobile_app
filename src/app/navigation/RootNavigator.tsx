@@ -7,6 +7,7 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { SignInScreen, SignUpScreen } from '#features/auth';
 import { ClassDetailScreen, ClassesListScreen } from '#features/classes';
 import { HomeScreen } from '#features/home';
+import { CreateOrganizationScreen } from '#features/orgs';
 import { SettingsScreen } from '#features/settings';
 import { theme } from '#shared';
 import {
@@ -18,6 +19,8 @@ import {
   MainTabParamList,
   RootRoutes,
   RootStackParamList,
+  SettingsRoutes,
+  SettingsStackParamList,
   TabRoutes,
 } from './AppRoutes';
 import { HomeActionRouter } from './HomeActionRouter';
@@ -32,6 +35,7 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const Tabs = createBottomTabNavigator<MainTabParamList>();
 const ClassesStack = createNativeStackNavigator<ClassesStackParamList>();
+const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 const homeActionRouter = new HomeActionRouter();
 
 export function RootNavigator({
@@ -118,10 +122,21 @@ function MainTabs({ container, onLogout, routeRegistry }: MainTabsProps) {
         {(props) => <HomeTabScreen {...props} container={container} />}
       </Tabs.Screen>
       <Tabs.Screen name={TabRoutes.Classes} options={{ title: 'Classes' }}>
-        {() => <ClassesNavigator routeRegistry={routeRegistry} />}
+        {() => (
+          <ClassesNavigator
+            container={container}
+            routeRegistry={routeRegistry}
+          />
+        )}
       </Tabs.Screen>
       <Tabs.Screen name={TabRoutes.Settings} options={{ title: 'Settings' }}>
-        {() => <SettingsScreen onLogout={onLogout} />}
+        {() => (
+          <SettingsNavigator
+            container={container}
+            onLogout={onLogout}
+            routeRegistry={routeRegistry}
+          />
+        )}
       </Tabs.Screen>
     </Tabs.Navigator>
   );
@@ -185,35 +200,86 @@ function HomeTabScreen({ container, navigation }: HomeTabScreenProps) {
     <HomeScreen
       viewModel={container.createHomeViewModel()}
       onActionPress={(actionId) => {
-        const tabRoute = homeActionRouter.resolveTabRoute(actionId);
+        const target = homeActionRouter.resolve(actionId);
 
-        if (tabRoute) {
-          navigation.navigate(tabRoute);
+        if (!target) {
+          return;
         }
+
+        if (target.type === 'tab') {
+          navigation.navigate(target.route);
+          return;
+        }
+
+        navigation.navigate(TabRoutes.Settings, {
+          screen: target.screen,
+        });
       }}
     />
   );
 }
 
 interface ClassesNavigatorProps {
+  container: ServiceContainer;
   routeRegistry: AppRouteRegistry;
 }
 
-function ClassesNavigator({ routeRegistry }: ClassesNavigatorProps) {
+function ClassesNavigator({ container, routeRegistry }: ClassesNavigatorProps) {
   return (
     <ClassesStack.Navigator
       initialRouteName={routeRegistry.classesInitialRoute}
       screenOptions={{ headerShown: false }}
     >
-      <ClassesStack.Screen
-        name={ClassRoutes.ClassList}
-        component={ClassesListScreen}
-      />
-      <ClassesStack.Screen
-        name={ClassRoutes.ClassDetail}
-        component={ClassDetailScreen}
-      />
+      <ClassesStack.Screen name={ClassRoutes.ClassList}>
+        {(props) => (
+          <ClassesListScreen
+            {...props}
+            classroomsApi={container.classroomsApi}
+          />
+        )}
+      </ClassesStack.Screen>
+      <ClassesStack.Screen name={ClassRoutes.ClassDetail}>
+        {(props) => (
+          <ClassDetailScreen
+            {...props}
+            classroomsApi={container.classroomsApi}
+          />
+        )}
+      </ClassesStack.Screen>
     </ClassesStack.Navigator>
+  );
+}
+
+interface SettingsNavigatorProps {
+  container: ServiceContainer;
+  onLogout: () => void;
+  routeRegistry: AppRouteRegistry;
+}
+
+function SettingsNavigator({
+  container,
+  onLogout,
+  routeRegistry,
+}: SettingsNavigatorProps) {
+  return (
+    <SettingsStack.Navigator
+      initialRouteName={routeRegistry.settingsInitialRoute}
+      screenOptions={{ headerShown: false }}
+    >
+      <SettingsStack.Screen name={SettingsRoutes.SettingsHome}>
+        {(props) => <SettingsScreen {...props} onLogout={onLogout} />}
+      </SettingsStack.Screen>
+      <SettingsStack.Screen name={SettingsRoutes.CreateOrganization}>
+        {({ navigation }) => (
+          <CreateOrganizationScreen
+            viewModel={container.createOrganizationViewModel()}
+            authSessionService={container.authSessionService}
+            onCreated={() => navigation.navigate(SettingsRoutes.SettingsHome)}
+            onCancel={() => navigation.goBack()}
+          />
+        )}
+      </SettingsStack.Screen>
+    </SettingsStack.Navigator>
   );
 }
 
