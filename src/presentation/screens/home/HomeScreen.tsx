@@ -1,4 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useCallback, useMemo, useState } from 'react';
+import { StyleSheet, Text } from 'react-native';
+import { GetStartedPanel } from '../../components/home/GetStartedPanel';
+import { WelcomeHeader } from '../../components/home/WelcomeHeader';
 import { TenowLogo } from '../../components/branding/TenowLogo';
 import { ScreenContainer } from '../../components/layout/ScreenContainer';
 import { theme } from '../../theme/Theme';
@@ -9,69 +12,47 @@ interface HomeScreenProps {
 }
 
 export function HomeScreen({ viewModel }: HomeScreenProps) {
+  const [selectedActionId, setSelectedActionId] = useState<string | null>(null);
+
+  const selectedAction = useMemo(
+    () =>
+      viewModel.actions.find((action) => action.id === selectedActionId) ??
+      null,
+    [selectedActionId, viewModel],
+  );
+
+  const handleSelectAction = useCallback((actionId: string) => {
+    setSelectedActionId((current) => (current === actionId ? null : actionId));
+  }, []);
+
   return (
     <ScreenContainer testID="home-screen">
       <TenowLogo appName={viewModel.appName} />
-      <Text style={styles.title} testID="home-welcome-title">
-        {viewModel.welcomeTitle}
-      </Text>
-      <Text style={styles.tagline}>{viewModel.tagline}</Text>
-
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>What TeNow offers</Text>
-        {viewModel.featureHighlights.map((feature) => (
-          <View key={feature} style={styles.featureRow}>
-            <Text style={styles.bullet}>•</Text>
-            <Text style={styles.featureText}>{feature}</Text>
-          </View>
-        ))}
-      </View>
+      <WelcomeHeader
+        headline={viewModel.welcomeHeadline}
+        subtitle={viewModel.workspaceSubtitle}
+      />
+      <GetStartedPanel
+        title={viewModel.getStartedTitle}
+        description={viewModel.getStartedDescription}
+        actions={viewModel.actions}
+        selectedActionId={selectedActionId}
+        onSelectAction={handleSelectAction}
+      />
+      {selectedAction ? (
+        <Text style={styles.selectionHint} testID="home-selected-action-hint">
+          Selected: {selectedAction.title}
+        </Text>
+      ) : null}
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    marginTop: theme.spacing.lg,
-    color: theme.colors.text,
-    fontSize: theme.typography.subtitle,
-    fontWeight: '600',
-  },
-  tagline: {
-    marginTop: theme.spacing.sm,
-    color: theme.colors.textMuted,
-    fontSize: theme.typography.body,
-    lineHeight: 22,
-  },
-  card: {
-    marginTop: theme.spacing.xl,
-    backgroundColor: theme.colors.surface,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    padding: theme.spacing.lg,
-    gap: theme.spacing.sm,
-  },
-  cardTitle: {
-    color: theme.colors.text,
-    fontSize: theme.typography.subtitle,
-    fontWeight: '600',
-    marginBottom: theme.spacing.xs,
-  },
-  featureRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: theme.spacing.sm,
-  },
-  bullet: {
+  selectionHint: {
+    marginTop: theme.spacing.md,
     color: theme.colors.primary,
-    fontSize: theme.typography.body,
-    lineHeight: 22,
-  },
-  featureText: {
-    flex: 1,
-    color: theme.colors.textMuted,
-    fontSize: theme.typography.body,
-    lineHeight: 22,
+    fontSize: theme.typography.caption,
+    fontWeight: '600',
   },
 });

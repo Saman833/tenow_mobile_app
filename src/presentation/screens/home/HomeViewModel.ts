@@ -1,4 +1,5 @@
 import { TenowConfig } from '../../../core/config/TenowConfig';
+import { HomeActionItem } from './HomeActionItem';
 
 export class HomeViewModel {
   constructor(private readonly config: TenowConfig) {}
@@ -7,19 +8,39 @@ export class HomeViewModel {
     return this.config.appName;
   }
 
-  get tagline(): string {
-    return this.config.tagline;
+  get welcomeHeadline(): string {
+    return 'Welcome back';
   }
 
-  get welcomeTitle(): string {
-    return `Welcome to ${this.config.appName}`;
+  get workspaceSubtitle(): string {
+    return "Here's what's happening in your workspace.";
   }
 
-  get featureHighlights(): string[] {
+  get getStartedTitle(): string {
+    return 'Get started';
+  }
+
+  get getStartedDescription(): string {
+    return "You're not in any classes yet. Pick the option that fits how you want to use TeNow.";
+  }
+
+  get actions(): readonly HomeActionItem[] {
     return [
-      'Class TA — guided help grounded in your syllabus',
-      'Teacher Assistant — rubric-aligned feedback drafts',
-      'Process trail — transparent AI use on every submission',
+      {
+        id: 'join-class',
+        title: 'Join a class',
+        description: 'Have a code from your teacher? Join your class here.',
+      },
+      {
+        id: 'create-class',
+        title: 'Create a class',
+        description: 'Set up a class and invite students.',
+      },
+      {
+        id: 'create-organization',
+        title: 'Create organization',
+        description: 'Manage multiple classes under one school or team.',
+      },
     ];
   }
 }
