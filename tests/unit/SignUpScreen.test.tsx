@@ -1,6 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import type { AuthSessionService } from '#features/auth';
-import { SignUpScreen } from '#features/auth/screens/SignUpScreen';
+import { SignUpScreen, type AuthSessionService } from '#features/auth';
 import { UserRole } from '#shared';
 
 describe('SignUpScreen', () => {

@@ -1,6 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import type { AuthSessionService } from '#features/auth';
-import { SignInScreen } from '#features/auth/screens/SignInScreen';
+import { SignInScreen, type AuthSessionService } from '#features/auth';
 
 describe('SignInScreen', () => {
   it('submits credentials and authenticates', async () => {
