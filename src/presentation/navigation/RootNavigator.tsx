@@ -1,7 +1,11 @@
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { SignInScreen } from '../screens/auth/SignInScreen';
+import { SignUpScreen } from '../screens/auth/SignUpScreen';
 import { HomeScreen } from '../screens/home/HomeScreen';
 import { ClassesListScreen } from '../screens/classes/ClassesListScreen';
 import { ClassDetailScreen } from '../screens/classes/ClassDetailScreen';
@@ -9,6 +13,8 @@ import { SettingsScreen } from '../screens/settings/SettingsScreen';
 import { theme } from '../theme/Theme';
 import {
   AppRouteRegistry,
+  AuthRoutes,
+  AuthStackParamList,
   ClassesStackParamList,
   ClassRoutes,
   MainTabParamList,
@@ -25,6 +31,7 @@ interface RootNavigatorProps {
 }
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const Tabs = createBottomTabNavigator<MainTabParamList>();
 const ClassesStack = createNativeStackNavigator<ClassesStackParamList>();
 const homeActionRouter = new HomeActionRouter();
@@ -33,15 +40,63 @@ export function RootNavigator({
   container,
   routeRegistry = new AppRouteRegistry(),
 }: RootNavigatorProps) {
+  const [isReady, setIsReady] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    container.authSessionService.restoreUser().then((user) => {
+      if (isMounted) {
+        setIsAuthenticated(Boolean(user));
+        setIsReady(true);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [container.authSessionService]);
+
+  const handleAuthenticated = useCallback(() => {
+    setIsAuthenticated(true);
+  }, []);
+
+  const handleLogout = useCallback(async () => {
+    await container.authSessionService.logout();
+    setIsAuthenticated(false);
+  }, [container.authSessionService]);
+
+  if (!isReady) {
+    return <LoadingScreen />;
+  }
+
   return (
     <NavigationContainer>
       <RootStack.Navigator
-        initialRouteName={routeRegistry.rootInitialRoute}
         screenOptions={{ headerShown: false }}
       >
-        <RootStack.Screen name={RootRoutes.MainTabs}>
-          {() => <MainTabs container={container} routeRegistry={routeRegistry} />}
-        </RootStack.Screen>
+        {isAuthenticated ? (
+          <RootStack.Screen name={RootRoutes.MainTabs}>
+            {() => (
+              <MainTabs
+                container={container}
+                onLogout={handleLogout}
+                routeRegistry={routeRegistry}
+              />
+            )}
+          </RootStack.Screen>
+        ) : (
+          <RootStack.Screen name={RootRoutes.AuthStack}>
+            {() => (
+              <AuthNavigator
+                container={container}
+                onAuthenticated={handleAuthenticated}
+                routeRegistry={routeRegistry}
+              />
+            )}
+          </RootStack.Screen>
+        )}
       </RootStack.Navigator>
     </NavigationContainer>
   );
@@ -49,10 +104,11 @@ export function RootNavigator({
 
 interface MainTabsProps {
   container: ServiceContainer;
+  onLogout: () => void;
   routeRegistry: AppRouteRegistry;
 }
 
-function MainTabs({ container, routeRegistry }: MainTabsProps) {
+function MainTabs({ container, onLogout, routeRegistry }: MainTabsProps) {
   return (
     <Tabs.Navigator
       initialRouteName={routeRegistry.tabInitialRoute}
@@ -68,8 +124,56 @@ function MainTabs({ container, routeRegistry }: MainTabsProps) {
       <Tabs.Screen name={TabRoutes.Classes} options={{ title: 'Classes' }}>
         {() => <ClassesNavigator routeRegistry={routeRegistry} />}
       </Tabs.Screen>
-      <Tabs.Screen name={TabRoutes.Settings} component={SettingsScreen} options={{ title: 'Settings' }} />
+      <Tabs.Screen name={TabRoutes.Settings} options={{ title: 'Settings' }}>
+        {() => <SettingsScreen onLogout={onLogout} />}
+      </Tabs.Screen>
     </Tabs.Navigator>
+  );
+}
+
+interface AuthNavigatorProps {
+  container: ServiceContainer;
+  onAuthenticated: () => void;
+  routeRegistry: AppRouteRegistry;
+}
+
+function AuthNavigator({
+  container,
+  onAuthenticated,
+  routeRegistry,
+}: AuthNavigatorProps) {
+  return (
+    <AuthStack.Navigator
+      initialRouteName={routeRegistry.authInitialRoute}
+      screenOptions={{ headerShown: false }}
+    >
+      <AuthStack.Screen name={AuthRoutes.SignIn}>
+        {({ navigation }) => (
+          <SignInScreen
+            authSessionService={container.authSessionService}
+            onAuthenticated={onAuthenticated}
+            onCreateAccount={() => navigation.navigate(AuthRoutes.SignUp)}
+          />
+        )}
+      </AuthStack.Screen>
+      <AuthStack.Screen name={AuthRoutes.SignUp}>
+        {({ navigation }) => (
+          <SignUpScreen
+            authSessionService={container.authSessionService}
+            onAuthenticated={onAuthenticated}
+            onSignIn={() => navigation.navigate(AuthRoutes.SignIn)}
+          />
+        )}
+      </AuthStack.Screen>
+    </AuthStack.Navigator>
+  );
+}
+
+function LoadingScreen() {
+  return (
+    <View style={styles.loading} testID="auth-loading-screen">
+      <ActivityIndicator color={theme.colors.primary} />
+    </View>
   );
 }
 
@@ -116,3 +220,12 @@ function ClassesNavigator({ routeRegistry }: ClassesNavigatorProps) {
     </ClassesStack.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.colors.background,
+  },
+});

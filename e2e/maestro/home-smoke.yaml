@@ -10,7 +10,6 @@ appId: host.exp.exponent
 - tapOn:
     text: "TeNow"
     optional: true
-- assertVisible: "Welcome back"
-- assertVisible: "Join a class"
-- assertVisible: "Create a class"
-- assertVisible: "Create organization"
+- assertVisible: "Sign in"
+- assertVisible: "Use your TeNow account to continue."
+- assertVisible: "Create account"

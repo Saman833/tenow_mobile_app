@@ -6,6 +6,9 @@ describe('BackendRoutes', () => {
   it('matches backend health and auth routes', () => {
     expect(routes.health).toBe('/health');
     expect(routes.ready).toBe('/ready');
+    expect(routes.authLogin).toBe('/auth/login');
+    expect(routes.authSignup).toBe('/auth/signup');
+    expect(routes.authLogout).toBe('/auth/logout');
     expect(routes.authMe).toBe('/auth/me');
     expect(routes.identityMe).toBe('/identity/me');
   });
