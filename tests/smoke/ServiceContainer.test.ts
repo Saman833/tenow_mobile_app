@@ -13,5 +13,7 @@ describe('ServiceContainer smoke', () => {
 
     expect(viewModel.appName).toBe('TeNow');
     expect(viewModel.actions).toHaveLength(3);
+    expect(container.backendRoutes.classroomsMine).toBe('/classrooms/mine');
+    expect(container.classroomsApi).toBeDefined();
   });
 });

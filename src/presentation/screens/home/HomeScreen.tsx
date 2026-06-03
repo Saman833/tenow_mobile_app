@@ -9,9 +9,10 @@ import { HomeViewModel } from './HomeViewModel';
 
 interface HomeScreenProps {
   viewModel: HomeViewModel;
+  onActionPress?: (actionId: string) => void;
 }
 
-export function HomeScreen({ viewModel }: HomeScreenProps) {
+export function HomeScreen({ viewModel, onActionPress }: HomeScreenProps) {
   const [selectedActionId, setSelectedActionId] = useState<string | null>(null);
 
   const selectedAction = useMemo(
@@ -23,7 +24,8 @@ export function HomeScreen({ viewModel }: HomeScreenProps) {
 
   const handleSelectAction = useCallback((actionId: string) => {
     setSelectedActionId((current) => (current === actionId ? null : actionId));
-  }, []);
+    onActionPress?.(actionId);
+  }, [onActionPress]);
 
   return (
     <ScreenContainer testID="home-screen">

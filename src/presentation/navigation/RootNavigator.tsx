@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from '../screens/home/HomeScreen';
 import { ClassesListScreen } from '../screens/classes/ClassesListScreen';
 import { ClassDetailScreen } from '../screens/classes/ClassDetailScreen';
@@ -15,6 +16,7 @@ import {
   RootStackParamList,
   TabRoutes,
 } from './AppRoutes';
+import { HomeActionRouter } from './HomeActionRouter';
 import { ServiceContainer } from '../../application/ServiceContainer';
 
 interface RootNavigatorProps {
@@ -25,6 +27,7 @@ interface RootNavigatorProps {
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator<MainTabParamList>();
 const ClassesStack = createNativeStackNavigator<ClassesStackParamList>();
+const homeActionRouter = new HomeActionRouter();
 
 export function RootNavigator({
   container,
@@ -60,13 +63,35 @@ function MainTabs({ container, routeRegistry }: MainTabsProps) {
       }}
     >
       <Tabs.Screen name={TabRoutes.Home} options={{ title: 'Home' }}>
-        {() => <HomeScreen viewModel={container.createHomeViewModel()} />}
+        {(props) => <HomeTabScreen {...props} container={container} />}
       </Tabs.Screen>
       <Tabs.Screen name={TabRoutes.Classes} options={{ title: 'Classes' }}>
         {() => <ClassesNavigator routeRegistry={routeRegistry} />}
       </Tabs.Screen>
       <Tabs.Screen name={TabRoutes.Settings} component={SettingsScreen} options={{ title: 'Settings' }} />
     </Tabs.Navigator>
+  );
+}
+
+type HomeTabScreenProps = BottomTabScreenProps<
+  MainTabParamList,
+  typeof TabRoutes.Home
+> & {
+  container: ServiceContainer;
+};
+
+function HomeTabScreen({ container, navigation }: HomeTabScreenProps) {
+  return (
+    <HomeScreen
+      viewModel={container.createHomeViewModel()}
+      onActionPress={(actionId) => {
+        const tabRoute = homeActionRouter.resolveTabRoute(actionId);
+
+        if (tabRoute) {
+          navigation.navigate(tabRoute);
+        }
+      }}
+    />
   );
 }
 
