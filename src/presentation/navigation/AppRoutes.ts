@@ -1,5 +1,11 @@
 export const RootRoutes = {
+  AuthStack: 'AuthStack',
   MainTabs: 'MainTabs',
+} as const;
+
+export const AuthRoutes = {
+  SignIn: 'SignIn',
+  SignUp: 'SignUp',
 } as const;
 
 export const TabRoutes = {
@@ -14,7 +20,13 @@ export const ClassRoutes = {
 } as const;
 
 export type RootStackParamList = {
+  [RootRoutes.AuthStack]: undefined;
   [RootRoutes.MainTabs]: undefined;
+};
+
+export type AuthStackParamList = {
+  [AuthRoutes.SignIn]: undefined;
+  [AuthRoutes.SignUp]: undefined;
 };
 
 export type MainTabParamList = {
@@ -29,7 +41,8 @@ export type ClassesStackParamList = {
 };
 
 export class AppRouteRegistry {
-  readonly rootInitialRoute = RootRoutes.MainTabs;
+  readonly rootInitialRoute = RootRoutes.AuthStack;
+  readonly authInitialRoute = AuthRoutes.SignIn;
   readonly tabInitialRoute = TabRoutes.Home;
   readonly classesInitialRoute = ClassRoutes.ClassList;
 }
