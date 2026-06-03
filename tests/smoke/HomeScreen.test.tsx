@@ -34,4 +34,15 @@ describe('HomeScreen smoke', () => {
     fireEvent.press(screen.getByTestId('action-card-join-class'));
     expect(screen.queryByTestId('home-selected-action-hint')).toBeNull();
   });
+
+  it('notifies parent when an action card is pressed', () => {
+    const onActionPress = jest.fn();
+    render(
+      <HomeScreen viewModel={viewModel} onActionPress={onActionPress} />,
+    );
+
+    fireEvent.press(screen.getByTestId('action-card-create-class'));
+
+    expect(onActionPress).toHaveBeenCalledWith('create-class');
+  });
 });
