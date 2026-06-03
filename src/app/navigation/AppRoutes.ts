@@ -20,6 +20,8 @@ export const TabRoutes = {
 export const ClassRoutes = {
   ClassList: 'ClassList',
   ClassDetail: 'ClassDetail',
+  CreateClass: 'CreateClass',
+  JoinClass: 'JoinClass',
 } as const;
 
 export const SettingsRoutes = {
@@ -46,6 +48,8 @@ export type MainTabParamList = {
 export type ClassesStackParamList = {
   [ClassRoutes.ClassList]: undefined;
   [ClassRoutes.ClassDetail]: { classId: string };
+  [ClassRoutes.CreateClass]: undefined;
+  [ClassRoutes.JoinClass]: undefined;
 };
 
 export class AppRouteRegistry {

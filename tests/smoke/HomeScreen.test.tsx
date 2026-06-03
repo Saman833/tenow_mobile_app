@@ -19,18 +19,18 @@ describe('HomeScreen smoke', () => {
       'Welcome back',
     );
     expect(screen.getByTestId('get-started-panel')).toBeTruthy();
-    expect(screen.getByText('Join a class')).toBeTruthy();
+    expect(screen.getByText('Create organization')).toBeTruthy();
   });
 
   it('shows selection hint when an action card is pressed', () => {
     render(<HomeScreen viewModel={viewModel} />);
 
-    fireEvent.press(screen.getByTestId('action-card-join-class'));
+    fireEvent.press(screen.getByTestId('action-card-create-organization'));
     expect(screen.getByTestId('home-selected-action-hint')).toHaveTextContent(
-      'Selected: Join a class',
+      'Selected: Create organization',
     );
 
-    fireEvent.press(screen.getByTestId('action-card-join-class'));
+    fireEvent.press(screen.getByTestId('action-card-create-organization'));
     expect(screen.queryByTestId('home-selected-action-hint')).toBeNull();
   });
 
@@ -40,8 +40,8 @@ describe('HomeScreen smoke', () => {
       <HomeScreen viewModel={viewModel} onActionPress={onActionPress} />,
     );
 
-    fireEvent.press(screen.getByTestId('action-card-create-class'));
+    fireEvent.press(screen.getByTestId('action-card-create-organization'));
 
-    expect(onActionPress).toHaveBeenCalledWith('create-class');
+    expect(onActionPress).toHaveBeenCalledWith('create-organization');
   });
 });

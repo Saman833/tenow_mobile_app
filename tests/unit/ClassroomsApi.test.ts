@@ -68,6 +68,20 @@ describe('ClassroomsApi', () => {
     });
   });
 
+  it('joins a class with a class code', async () => {
+    const { api, request } = createApi();
+    request.mockResolvedValue({ classId: 'class-1' });
+
+    await expect(api.joinWithCode(' math8demo ')).resolves.toEqual({
+      classId: 'class-1',
+    });
+
+    expect(request).toHaveBeenCalledWith('/classrooms/join', {
+      method: 'POST',
+      body: { joinCode: 'MATH8DEMO' },
+    });
+  });
+
   it('requests class detail from the backend route', async () => {
     const { api, request } = createApi();
     const classroom = {

@@ -17,10 +17,8 @@ describe('HomeViewModel', () => {
 
   it('exposes get started actions aligned with web dashboard', () => {
     expect(viewModel.getStartedTitle).toBe('Get started');
-    expect(viewModel.actions).toHaveLength(3);
+    expect(viewModel.actions).toHaveLength(1);
     expect(viewModel.actions.map((action) => action.id)).toEqual([
-      'join-class',
-      'create-class',
       'create-organization',
     ]);
   });

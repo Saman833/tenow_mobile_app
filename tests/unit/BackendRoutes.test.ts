@@ -18,6 +18,7 @@ describe('BackendRoutes', () => {
 
   it('matches backend classroom routes', () => {
     expect(routes.classrooms).toBe('/classrooms');
+    expect(routes.classroomJoin).toBe('/classrooms/join');
     expect(routes.classroomsMine).toBe('/classrooms/mine');
     expect(routes.classroomInvitationsMine).toBe(
       '/classrooms/invitations/mine',

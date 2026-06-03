@@ -6,7 +6,8 @@ describe('HomeViewModel smoke', () => {
     const viewModel = new HomeViewModel(TenowConfig.createDefault());
 
     expect(viewModel.appName).toBe('TeNow');
-    expect(viewModel.actions).toHaveLength(3);
+    expect(viewModel.actions).toHaveLength(1);
+    expect(viewModel.actions[0].id).toBe('create-organization');
     expect(viewModel.getStartedTitle).toBe('Get started');
   });
 });

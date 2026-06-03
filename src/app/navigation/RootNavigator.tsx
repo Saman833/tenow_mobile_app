@@ -5,7 +5,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { SignInScreen, SignUpScreen } from '#features/auth';
-import { ClassDetailScreen, ClassesListScreen } from '#features/classes';
+import {
+  ClassDetailScreen,
+  ClassesListScreen,
+  CreateClassScreen,
+  JoinClassScreen,
+} from '#features/classes';
 import { HomeScreen } from '#features/home';
 import { CreateOrganizationScreen } from '#features/orgs';
 import { SettingsScreen } from '#features/settings';
@@ -286,6 +291,19 @@ function ClassesNavigator({ container, routeRegistry }: ClassesNavigatorProps) {
             {...props}
             classroomsApi={container.classroomsApi}
           />
+        )}
+      </ClassesStack.Screen>
+      <ClassesStack.Screen name={ClassRoutes.CreateClass}>
+        {(props) => (
+          <CreateClassScreen
+            {...props}
+            classroomsApi={container.classroomsApi}
+          />
+        )}
+      </ClassesStack.Screen>
+      <ClassesStack.Screen name={ClassRoutes.JoinClass}>
+        {(props) => (
+          <JoinClassScreen {...props} classroomsApi={container.classroomsApi} />
         )}
       </ClassesStack.Screen>
     </ClassesStack.Navigator>

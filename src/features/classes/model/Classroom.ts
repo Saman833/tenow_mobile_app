@@ -12,6 +12,10 @@ export interface CreateClassroomInput {
   readonly gradeLevel: string;
 }
 
+export interface ClassroomEnrollment {
+  readonly classId: string;
+}
+
 export interface ClassroomInvitation {
   readonly id: string;
   readonly classId: string;

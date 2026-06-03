@@ -14,5 +14,7 @@ describe('AppRouteRegistry', () => {
     expect(registry.authInitialRoute).toBe(AuthRoutes.SignIn);
     expect(registry.tabInitialRoute).toBe(TabRoutes.Home);
     expect(registry.classesInitialRoute).toBe(ClassRoutes.ClassList);
+    expect(ClassRoutes.CreateClass).toBe('CreateClass');
+    expect(ClassRoutes.JoinClass).toBe('JoinClass');
   });
 });

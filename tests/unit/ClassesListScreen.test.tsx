@@ -78,5 +78,33 @@ describe('ClassesListScreen', () => {
     await waitFor(() =>
       expect(screen.getByTestId('classes-empty')).toBeTruthy(),
     );
+    expect(screen.getByText('No classes yet')).toBeTruthy();
+    expect(screen.getByTestId('classes-join-class')).toBeTruthy();
+    expect(screen.getByTestId('classes-create-class')).toBeTruthy();
+  });
+
+  it('opens class creation and join screens from the class section', async () => {
+    const navigate = jest.fn();
+    const classroomsApi = {
+      listMine: jest.fn().mockResolvedValue([]),
+    } as unknown as ClassroomsApi;
+
+    render(
+      <ClassesListScreen
+        classroomsApi={classroomsApi}
+        navigation={{ navigate } as never}
+        route={{ params: undefined } as never}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId('classes-empty')).toBeTruthy(),
+    );
+
+    fireEvent.press(screen.getByTestId('classes-join-class'));
+    fireEvent.press(screen.getByTestId('classes-create-class'));
+
+    expect(navigate).toHaveBeenCalledWith(ClassRoutes.JoinClass);
+    expect(navigate).toHaveBeenCalledWith(ClassRoutes.CreateClass);
   });
 });

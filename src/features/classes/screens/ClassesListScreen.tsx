@@ -57,6 +57,19 @@ export function ClassesListScreen({
         title="Classes"
         subtitle="Your enrolled and teaching classes."
       />
+      <View style={styles.actions}>
+        <Button
+          label="Join a class"
+          variant="secondary"
+          testID="classes-join-class"
+          onPress={() => navigation.navigate(ClassRoutes.JoinClass)}
+        />
+        <Button
+          label="Create a class"
+          testID="classes-create-class"
+          onPress={() => navigation.navigate(ClassRoutes.CreateClass)}
+        />
+      </View>
       {isLoading ? (
         <View style={styles.centered}>
           <ActivityIndicator color={theme.colors.primary} testID="classes-loading" />
@@ -71,7 +84,7 @@ export function ClassesListScreen({
       ) : classes.length === 0 ? (
         <EmptyState
           title="No classes yet"
-          description="Join a class from Home or create one when that flow is available."
+          description="Join with a teacher code or create a class to invite students."
           testID="classes-empty"
         />
       ) : (
@@ -94,6 +107,10 @@ export function ClassesListScreen({
 }
 
 const styles = StyleSheet.create({
+  actions: {
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+  },
   centered: {
     alignItems: 'center',
     gap: spacing.md,

@@ -1,6 +1,7 @@
 import { BackendRoutes, HttpClient } from '#shared';
 import {
   Classroom,
+  ClassroomEnrollment,
   ClassroomInvitation,
   CreateClassroomInput,
 } from '../model/Classroom';
@@ -24,6 +25,16 @@ export class ClassroomsApi {
       method: 'POST',
       body: input,
     });
+  }
+
+  joinWithCode(joinCode: string): Promise<ClassroomEnrollment> {
+    return this.httpClient.request<ClassroomEnrollment>(
+      this.routes.classroomJoin,
+      {
+        method: 'POST',
+        body: { joinCode: joinCode.trim().toUpperCase() },
+      },
+    );
   }
 
   listInvitations(): Promise<ClassroomInvitation[]> {
