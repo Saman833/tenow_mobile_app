@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { ClassDetailScreen } from '../../src/presentation/screens/classes/ClassDetailScreen';
+import { ClassDetailScreen } from '#features/classes';
 
 describe('ClassDetailScreen', () => {
   it('renders the selected class id', () => {

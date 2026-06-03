@@ -1,5 +1,4 @@
-import { AppError } from '../../src/core/errors/AppError';
-import { HttpClient } from '../../src/infrastructure/api/HttpClient';
+import { AppError, HttpClient } from '#shared';
 
 describe('HttpClient', () => {
   afterEach(() => {

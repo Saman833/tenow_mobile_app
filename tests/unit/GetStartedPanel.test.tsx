@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { GetStartedPanel } from '../../src/presentation/components/home/GetStartedPanel';
+import { GetStartedPanel } from '#features/home';
 
 const actions = [
   {

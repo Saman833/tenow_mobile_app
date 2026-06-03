@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import { AuthSessionService } from '../../src/application/AuthSessionService';
-import { SignInScreen } from '../../src/presentation/screens/auth/SignInScreen';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import type { AuthSessionService } from '#features/auth';
+import { SignInScreen } from '#features/auth/screens/SignInScreen';
 
 describe('SignInScreen', () => {
   it('submits credentials and authenticates', async () => {
@@ -17,9 +17,13 @@ describe('SignInScreen', () => {
       />,
     );
 
-    fireEvent.changeText(screen.getByTestId('sign-in-email'), 'student@tenow.test');
-    fireEvent.changeText(screen.getByTestId('sign-in-password'), 'password123');
-    fireEvent.press(screen.getByTestId('sign-in-submit'));
+    await act(async () => {
+      fireEvent.changeText(screen.getByTestId('sign-in-email'), 'student@tenow.test');
+      fireEvent.changeText(screen.getByTestId('sign-in-password'), 'password123');
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('sign-in-submit'));
+    });
 
     await waitFor(() => expect(onAuthenticated).toHaveBeenCalledTimes(1));
     expect(authSessionService.signIn).toHaveBeenCalledWith({

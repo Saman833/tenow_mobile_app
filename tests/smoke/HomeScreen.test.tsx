@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { TenowConfig } from '../../src/core/config/TenowConfig';
-import { HomeScreen } from '../../src/presentation/screens/home/HomeScreen';
-import { HomeViewModel } from '../../src/presentation/screens/home/HomeViewModel';
+import { HomeScreen, HomeViewModel } from '#features/home';
+import { TenowConfig } from '#shared';
 
 describe('HomeScreen smoke', () => {
   const viewModel = new HomeViewModel(

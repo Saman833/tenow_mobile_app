@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react-native';
-import { AppBootstrap } from '../../src/application/AppBootstrap';
+import { AppBootstrap } from '#app';
 import App from '../../src/App';
 
 describe('App smoke', () => {

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { ClassRoutes } from '../../src/presentation/navigation/AppRoutes';
-import { ClassesListScreen } from '../../src/presentation/screens/classes/ClassesListScreen';
+import { ClassRoutes } from '#app/navigation/AppRoutes';
+import { ClassesListScreen } from '#features/classes';
 
 describe('ClassesListScreen', () => {
   it('renders the classes entry screen', () => {

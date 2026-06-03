@@ -4,7 +4,7 @@ import {
   ClassRoutes,
   RootRoutes,
   TabRoutes,
-} from '../../src/presentation/navigation/AppRoutes';
+} from '#app/navigation/AppRoutes';
 
 describe('AppRouteRegistry', () => {
   it('defines root stack, tab, and nested stack initial routes', () => {

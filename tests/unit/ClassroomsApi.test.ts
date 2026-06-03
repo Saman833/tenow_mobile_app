@@ -1,6 +1,5 @@
-import { BackendRoutes } from '../../src/infrastructure/api/BackendRoutes';
-import { ClassroomsApi } from '../../src/infrastructure/api/ClassroomsApi';
-import { HttpClient } from '../../src/infrastructure/api/HttpClient';
+import { ClassroomsApi } from '#features/classes';
+import { BackendRoutes, HttpClient } from '#shared';
 
 describe('ClassroomsApi', () => {
   const createApi = () => {

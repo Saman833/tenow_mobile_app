@@ -1,5 +1,5 @@
-import { TenowConfig } from '../../src/core/config/TenowConfig';
-import { HomeViewModel } from '../../src/presentation/screens/home/HomeViewModel';
+import { HomeViewModel } from '#features/home';
+import { TenowConfig } from '#shared';
 
 describe('HomeViewModel', () => {
   const viewModel = new HomeViewModel(

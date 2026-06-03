@@ -63,7 +63,21 @@
     "testMatch": [
       "**/__tests__/**/*.test.{ts,tsx}",
       "**/tests/**/*.test.{ts,tsx}"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^#shared$": "<rootDir>/src/shared/index.ts",
+      "^#shared/(.*)$": "<rootDir>/src/shared/$1",
+      "^#app$": "<rootDir>/src/app/index.ts",
+      "^#app/(.*)$": "<rootDir>/src/app/$1",
+      "^#features/auth$": "<rootDir>/src/features/auth/index.ts",
+      "^#features/auth/(.*)$": "<rootDir>/src/features/auth/$1",
+      "^#features/home$": "<rootDir>/src/features/home/index.ts",
+      "^#features/home/(.*)$": "<rootDir>/src/features/home/$1",
+      "^#features/classes$": "<rootDir>/src/features/classes/index.ts",
+      "^#features/classes/(.*)$": "<rootDir>/src/features/classes/$1",
+      "^#features/settings$": "<rootDir>/src/features/settings/index.ts",
+      "^#features/settings/(.*)$": "<rootDir>/src/features/settings/$1"
+    }
   },
   "private": true
 }

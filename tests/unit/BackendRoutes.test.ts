@@ -1,4 +1,4 @@
-import { BackendRoutes } from '../../src/infrastructure/api/BackendRoutes';
+import { BackendRoutes } from '#shared';
 
 describe('BackendRoutes', () => {
   const routes = new BackendRoutes();

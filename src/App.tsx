@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AppBootstrap } from './application/AppBootstrap';
-import { RootNavigator } from './presentation/navigation/RootNavigator';
+import { AppBootstrap, RootNavigator } from '#app';
 
 export default function App() {
   const bootstrap = AppBootstrap.initialize();

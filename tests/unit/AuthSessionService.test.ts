@@ -1,6 +1,5 @@
-import { AuthSessionService } from '../../src/application/AuthSessionService';
-import { AuthApi } from '../../src/infrastructure/api/AuthApi';
-import { AuthTokenStore } from '../../src/infrastructure/auth/AuthTokenStore';
+import { AuthApi, AuthSessionService } from '#features/auth';
+import { AuthTokenStore } from '#shared';
 
 describe('AuthSessionService', () => {
   const createService = () => {

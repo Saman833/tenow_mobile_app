@@ -1,5 +1,5 @@
-import { ServiceContainer } from '../../src/application/ServiceContainer';
-import { TenowConfig } from '../../src/core/config/TenowConfig';
+import { ServiceContainer } from '#app';
+import { TenowConfig } from '#shared';
 
 describe('ServiceContainer smoke', () => {
   it('creates a wired home view model', () => {
