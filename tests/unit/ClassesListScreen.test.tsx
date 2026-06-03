@@ -1,33 +1,110 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { ClassRoutes } from '#app/navigation/AppRoutes';
 import { ClassesListScreen } from '#features/classes';
+import { ClassroomsApi } from '#features/classes/api/ClassroomsApi';
 
 describe('ClassesListScreen', () => {
-  it('renders the classes entry screen', () => {
+  it('renders classes from the API', async () => {
+    const classroomsApi = {
+      listMine: jest.fn().mockResolvedValue([
+        {
+          id: 'class-1',
+          name: 'CS 101',
+          subject: 'Computer Science',
+          gradeLevel: 'Grade 10',
+        },
+      ]),
+    } as unknown as ClassroomsApi;
+
     render(
       <ClassesListScreen
+        classroomsApi={classroomsApi}
         navigation={{ navigate: jest.fn() } as never}
         route={{ params: undefined } as never}
       />,
     );
 
-    expect(screen.getByTestId('classes-list-screen')).toBeTruthy();
-    expect(screen.getByText('Classes')).toBeTruthy();
+    await waitFor(() =>
+      expect(screen.getByTestId('class-row-class-1')).toBeTruthy(),
+    );
+    expect(screen.getByText('CS 101')).toBeTruthy();
   });
 
-  it('navigates to class detail from the sample class', () => {
+  it('navigates to class detail when a class row is pressed', async () => {
     const navigate = jest.fn();
+    const classroomsApi = {
+      listMine: jest.fn().mockResolvedValue([
+        {
+          id: 'class-1',
+          name: 'CS 101',
+          subject: 'Computer Science',
+          gradeLevel: 'Grade 10',
+        },
+      ]),
+    } as unknown as ClassroomsApi;
+
     render(
       <ClassesListScreen
+        classroomsApi={classroomsApi}
         navigation={{ navigate } as never}
         route={{ params: undefined } as never}
       />,
     );
 
-    fireEvent.press(screen.getByTestId('open-class-detail-button'));
+    await waitFor(() =>
+      expect(screen.getByTestId('class-row-class-1')).toBeTruthy(),
+    );
+
+    fireEvent.press(screen.getByTestId('class-row-class-1'));
 
     expect(navigate).toHaveBeenCalledWith(ClassRoutes.ClassDetail, {
-      classId: 'cs-101',
+      classId: 'class-1',
     });
+  });
+
+  it('shows empty state when there are no classes', async () => {
+    const classroomsApi = {
+      listMine: jest.fn().mockResolvedValue([]),
+    } as unknown as ClassroomsApi;
+
+    render(
+      <ClassesListScreen
+        classroomsApi={classroomsApi}
+        navigation={{ navigate: jest.fn() } as never}
+        route={{ params: undefined } as never}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId('classes-empty')).toBeTruthy(),
+    );
+    expect(screen.getByText('No classes yet')).toBeTruthy();
+    expect(screen.getByTestId('classes-join-class')).toBeTruthy();
+    expect(screen.getByTestId('classes-create-class')).toBeTruthy();
+  });
+
+  it('opens class creation and join screens from the class section', async () => {
+    const navigate = jest.fn();
+    const classroomsApi = {
+      listMine: jest.fn().mockResolvedValue([]),
+    } as unknown as ClassroomsApi;
+
+    render(
+      <ClassesListScreen
+        classroomsApi={classroomsApi}
+        navigation={{ navigate } as never}
+        route={{ params: undefined } as never}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId('classes-empty')).toBeTruthy(),
+    );
+
+    fireEvent.press(screen.getByTestId('classes-join-class'));
+    fireEvent.press(screen.getByTestId('classes-create-class'));
+
+    expect(navigate).toHaveBeenCalledWith(ClassRoutes.JoinClass);
+    expect(navigate).toHaveBeenCalledWith(ClassRoutes.CreateClass);
   });
 });

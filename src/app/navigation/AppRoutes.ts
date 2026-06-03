@@ -1,6 +1,9 @@
+import type { NavigatorScreenParams } from '@react-navigation/native';
+
 export const RootRoutes = {
   AuthStack: 'AuthStack',
   MainTabs: 'MainTabs',
+  CreateOrganization: 'CreateOrganization',
 } as const;
 
 export const AuthRoutes = {
@@ -17,11 +20,18 @@ export const TabRoutes = {
 export const ClassRoutes = {
   ClassList: 'ClassList',
   ClassDetail: 'ClassDetail',
+  CreateClass: 'CreateClass',
+  JoinClass: 'JoinClass',
+} as const;
+
+export const SettingsRoutes = {
+  CreateOrganization: 'CreateOrganization',
 } as const;
 
 export type RootStackParamList = {
   [RootRoutes.AuthStack]: undefined;
-  [RootRoutes.MainTabs]: undefined;
+  [RootRoutes.MainTabs]: NavigatorScreenParams<MainTabParamList> | undefined;
+  [RootRoutes.CreateOrganization]: undefined;
 };
 
 export type AuthStackParamList = {
@@ -38,6 +48,8 @@ export type MainTabParamList = {
 export type ClassesStackParamList = {
   [ClassRoutes.ClassList]: undefined;
   [ClassRoutes.ClassDetail]: { classId: string };
+  [ClassRoutes.CreateClass]: undefined;
+  [ClassRoutes.JoinClass]: undefined;
 };
 
 export class AppRouteRegistry {

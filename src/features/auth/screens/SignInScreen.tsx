@@ -1,6 +1,13 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { ScreenContainer, theme } from '#shared';
+import { StyleSheet, View } from 'react-native';
+import {
+  AppText,
+  Button,
+  FormField,
+  ScreenContainer,
+  ScreenHeader,
+  spacing,
+} from '#shared';
 import { AuthSessionService } from '../services/AuthSessionService';
 
 interface SignInScreenProps {
@@ -35,90 +42,51 @@ export function SignInScreen({
 
   return (
     <ScreenContainer testID="sign-in-screen">
-      <Text style={styles.title}>Sign in</Text>
-      <Text style={styles.subtitle}>Use your TeNow account to continue.</Text>
+      <ScreenHeader
+        title="Sign in"
+        subtitle="Use your TeNow account to continue."
+      />
       <View style={styles.form}>
-        <TextInput
+        <FormField
           autoCapitalize="none"
           keyboardType="email-address"
           onChangeText={setEmail}
           placeholder="Email"
-          style={styles.input}
           testID="sign-in-email"
           value={email}
         />
-        <TextInput
+        <FormField
           onChangeText={setPassword}
           placeholder="Password"
           secureTextEntry
-          style={styles.input}
           testID="sign-in-password"
           value={password}
         />
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        <Pressable
-          disabled={isSubmitting}
-          onPress={handleSignIn}
-          style={styles.primaryButton}
+        {error ? (
+          <AppText variant="caption" tone="danger">
+            {error}
+          </AppText>
+        ) : null}
+        <Button
+          label={isSubmitting ? 'Signing in...' : 'Sign in'}
+          loading={isSubmitting}
           testID="sign-in-submit"
-        >
-          <Text style={styles.primaryButtonText}>
-            {isSubmitting ? 'Signing in...' : 'Sign in'}
-          </Text>
-        </Pressable>
-        <Pressable onPress={onCreateAccount} testID="go-to-sign-up">
-          <Text style={styles.linkText}>Create account</Text>
-        </Pressable>
+          onPress={handleSignIn}
+        />
+        <Button
+          label="Create account"
+          variant="ghost"
+          testID="go-to-sign-up"
+          onPress={onCreateAccount}
+        />
       </View>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: theme.colors.text,
-    fontSize: theme.typography.title,
-    fontWeight: '700',
-  },
-  subtitle: {
-    marginTop: theme.spacing.sm,
-    color: theme.colors.textMuted,
-    fontSize: theme.typography.body,
-    lineHeight: 22,
-  },
   form: {
-    marginTop: theme.spacing.xl,
-    gap: theme.spacing.md,
-  },
-  input: {
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-    borderRadius: 12,
-    borderWidth: 1,
-    color: theme.colors.text,
-    fontSize: theme.typography.body,
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.md,
-  },
-  error: {
-    color: theme.colors.danger,
-    fontSize: theme.typography.caption,
-  },
-  primaryButton: {
-    alignItems: 'center',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 12,
-    paddingVertical: theme.spacing.md,
-  },
-  primaryButtonText: {
-    color: theme.colors.surface,
-    fontSize: theme.typography.body,
-    fontWeight: '700',
-  },
-  linkText: {
-    color: theme.colors.primary,
-    fontSize: theme.typography.body,
-    fontWeight: '600',
-    textAlign: 'center',
+    gap: spacing.md,
+    marginTop: spacing.xl,
   },
 });

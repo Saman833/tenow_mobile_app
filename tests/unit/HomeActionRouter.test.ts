@@ -1,21 +1,28 @@
-import { TabRoutes } from '#app/navigation/AppRoutes';
+import { RootRoutes, TabRoutes } from '#app/navigation/AppRoutes';
 import { HomeActionRouter } from '#app/navigation/HomeActionRouter';
 
 describe('HomeActionRouter', () => {
   const router = new HomeActionRouter();
 
   it('routes class actions to the Classes tab', () => {
-    expect(router.resolveTabRoute('join-class')).toBe(TabRoutes.Classes);
-    expect(router.resolveTabRoute('create-class')).toBe(TabRoutes.Classes);
+    expect(router.resolve('join-class')).toEqual({
+      type: 'tab',
+      route: TabRoutes.Classes,
+    });
+    expect(router.resolve('create-class')).toEqual({
+      type: 'tab',
+      route: TabRoutes.Classes,
+    });
   });
 
-  it('routes organization action to Settings', () => {
-    expect(router.resolveTabRoute('create-organization')).toBe(
-      TabRoutes.Settings,
-    );
+  it('routes organization action to create organization screen', () => {
+    expect(router.resolve('create-organization')).toEqual({
+      type: 'createOrganization',
+      route: RootRoutes.CreateOrganization,
+    });
   });
 
   it('ignores unknown actions', () => {
-    expect(router.resolveTabRoute('unknown')).toBeNull();
+    expect(router.resolve('unknown')).toBeNull();
   });
 });

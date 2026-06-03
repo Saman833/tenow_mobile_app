@@ -1,5 +1,4 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
-import { theme } from '#shared';
+import { Card, AppText } from '#shared';
 
 interface ActionCardProps {
   title: string;
@@ -17,38 +16,11 @@ export function ActionCard({
   testID,
 }: ActionCardProps) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={[styles.card, selected && styles.cardSelected]}
-      testID={testID}
-    >
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
-    </Pressable>
+    <Card selected={selected} onPress={onPress} testID={testID}>
+      <AppText variant="subtitle">{title}</AppText>
+      <AppText variant="caption" tone="muted">
+        {description}
+      </AppText>
+    </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    padding: theme.spacing.md,
-    gap: theme.spacing.xs,
-  },
-  cardSelected: {
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primaryMuted,
-  },
-  title: {
-    color: theme.colors.text,
-    fontSize: theme.typography.subtitle,
-    fontWeight: '600',
-  },
-  description: {
-    color: theme.colors.textMuted,
-    fontSize: theme.typography.caption,
-    lineHeight: 18,
-  },
-});

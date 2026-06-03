@@ -5,7 +5,7 @@ const SRC_ROOT = path.join(__dirname, '../../src');
 const LEGACY_IMPORT_PATTERN =
   /(?:^|\/)(?:application|core|infrastructure|presentation)(?:\/|$)|domain\/entities/;
 
-const FEATURES = ['auth', 'home', 'classes', 'settings'] as const;
+const FEATURES = ['auth', 'home', 'classes', 'settings', 'orgs'] as const;
 
 function listSourceFiles(dir: string): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true });

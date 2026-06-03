@@ -23,8 +23,12 @@ export function HomeScreen({ viewModel, onActionPress }: HomeScreenProps) {
 
   const handleSelectAction = useCallback(
     (actionId: string) => {
+      if (onActionPress) {
+        onActionPress(actionId);
+        return;
+      }
+
       setSelectedActionId((current) => (current === actionId ? null : actionId));
-      onActionPress?.(actionId);
     },
     [onActionPress],
   );

@@ -1,52 +1,56 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
-import { ScreenContainer, theme } from '#shared';
+import { StyleSheet, View } from 'react-native';
+import {
+  Button,
+  ScreenContainer,
+  ScreenHeader,
+  spacing,
+} from '#shared';
 
 interface SettingsScreenProps {
+  onCreateOrganization: () => void;
   onLogout?: () => void;
 }
 
-export function SettingsScreen({ onLogout }: SettingsScreenProps) {
+export function SettingsScreen({
+  onCreateOrganization,
+  onLogout,
+}: SettingsScreenProps) {
   return (
     <ScreenContainer testID="settings-screen">
-      <Text style={styles.title}>Settings</Text>
-      <Text style={styles.description}>
-        Account and workspace preferences will live here.
-      </Text>
-      <Pressable
-        onPress={onLogout}
-        style={styles.logoutButton}
-        testID="logout-button"
-      >
-        <Text style={styles.logoutText}>Log out</Text>
-      </Pressable>
+      <ScreenHeader
+        title="Settings"
+        subtitle="Account and workspace preferences."
+      />
+      <View style={styles.actions}>
+        <Button
+          label="Create organization"
+          variant="secondary"
+          testID="settings-create-org"
+          onPress={onCreateOrganization}
+        />
+        <Button
+          label="Log out"
+          variant="dangerOutline"
+          testID="logout-button"
+          onPress={onLogout}
+        />
+      </View>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: theme.colors.text,
-    fontSize: theme.typography.title,
-    fontWeight: '700',
+  orgCard: {
+    marginTop: spacing.xl,
   },
-  description: {
-    marginTop: theme.spacing.sm,
-    color: theme.colors.textMuted,
-    fontSize: theme.typography.body,
-    lineHeight: 22,
+  orgList: {
+    gap: spacing.sm,
   },
-  logoutButton: {
-    alignItems: 'center',
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.danger,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginTop: theme.spacing.xl,
-    paddingVertical: theme.spacing.md,
+  orgRow: {
+    gap: spacing.xs,
   },
-  logoutText: {
-    color: theme.colors.danger,
-    fontSize: theme.typography.body,
-    fontWeight: '700',
+  actions: {
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
 });

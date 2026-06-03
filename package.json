@@ -76,7 +76,9 @@
       "^#features/classes$": "<rootDir>/src/features/classes/index.ts",
       "^#features/classes/(.*)$": "<rootDir>/src/features/classes/$1",
       "^#features/settings$": "<rootDir>/src/features/settings/index.ts",
-      "^#features/settings/(.*)$": "<rootDir>/src/features/settings/$1"
+      "^#features/settings/(.*)$": "<rootDir>/src/features/settings/$1",
+      "^#features/orgs$": "<rootDir>/src/features/orgs/index.ts",
+      "^#features/orgs/(.*)$": "<rootDir>/src/features/orgs/$1"
     }
   },
   "private": true

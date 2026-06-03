@@ -21,21 +21,11 @@ export class HomeViewModel {
   }
 
   get getStartedDescription(): string {
-    return "You're not in any classes yet. Pick the option that fits how you want to use TeNow.";
+    return 'Create an organization if you manage classes across a school or team.';
   }
 
   get actions(): readonly HomeActionItem[] {
     return [
-      {
-        id: 'join-class',
-        title: 'Join a class',
-        description: 'Have a code from your teacher? Join your class here.',
-      },
-      {
-        id: 'create-class',
-        title: 'Create a class',
-        description: 'Set up a class and invite students.',
-      },
       {
         id: 'create-organization',
         title: 'Create organization',

@@ -6,6 +6,7 @@ export {
   AuthRoutes,
   ClassRoutes,
   RootRoutes,
+  SettingsRoutes,
   TabRoutes,
 } from './navigation/AppRoutes';
 export type {

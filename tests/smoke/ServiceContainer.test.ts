@@ -12,8 +12,9 @@ describe('ServiceContainer smoke', () => {
     const viewModel = container.createHomeViewModel();
 
     expect(viewModel.appName).toBe('TeNow');
-    expect(viewModel.actions).toHaveLength(3);
+    expect(viewModel.actions).toHaveLength(1);
     expect(container.backendRoutes.classroomsMine).toBe('/classrooms/mine');
+    expect(container.backendRoutes.classroomJoin).toBe('/classrooms/join');
     expect(container.backendRoutes.authLogin).toBe('/auth/login');
     expect(container.authSessionService).toBeDefined();
     expect(container.classroomsApi).toBeDefined();

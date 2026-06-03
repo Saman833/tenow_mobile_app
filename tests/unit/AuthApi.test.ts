@@ -25,6 +25,7 @@ describe('AuthApi', () => {
         email: 'student@tenow.test',
         password: 'password123',
       },
+      authenticated: false,
     });
   });
 
@@ -47,6 +48,7 @@ describe('AuthApi', () => {
         password: 'password123',
         role: 'teacher',
       },
+      authenticated: false,
     });
   });
 

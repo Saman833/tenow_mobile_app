@@ -6,6 +6,16 @@ export interface Classroom {
   readonly currentUserRole?: string;
 }
 
+export interface CreateClassroomInput {
+  readonly name: string;
+  readonly subject: string;
+  readonly gradeLevel: string;
+}
+
+export interface ClassroomEnrollment {
+  readonly classId: string;
+}
+
 export interface ClassroomInvitation {
   readonly id: string;
   readonly classId: string;

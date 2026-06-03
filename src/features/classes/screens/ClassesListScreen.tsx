@@ -1,82 +1,123 @@
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { ScreenContainer, theme } from '#shared';
+import {
+  AppText,
+  Button,
+  EmptyState,
+  ScreenContainer,
+  ScreenHeader,
+  ListRow,
+  spacing,
+  theme,
+} from '#shared';
 import {
   ClassRoutes,
   ClassesStackParamList,
 } from '#app/navigation/AppRoutes';
+import { ClassroomsApi } from '../api/ClassroomsApi';
+import { Classroom } from '../model/Classroom';
 
 type ClassesListScreenProps = NativeStackScreenProps<
   ClassesStackParamList,
   typeof ClassRoutes.ClassList
->;
+> & {
+  classroomsApi: ClassroomsApi;
+};
 
-export function ClassesListScreen({ navigation }: ClassesListScreenProps) {
+export function ClassesListScreen({
+  navigation,
+  classroomsApi,
+}: ClassesListScreenProps) {
+  const [classes, setClasses] = useState<Classroom[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadClasses = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await classroomsApi.listMine();
+      setClasses(result);
+    } catch {
+      setError('Unable to load classes. Pull to retry.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [classroomsApi]);
+
+  useEffect(() => {
+    loadClasses();
+  }, [loadClasses]);
+
   return (
     <ScreenContainer testID="classes-list-screen">
-      <Text style={styles.title}>Classes</Text>
-      <Text style={styles.description}>
-        Your classes will appear here once the API is connected.
-      </Text>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>CS 101</Text>
-        <Text style={styles.cardText}>Sample class route for the nested stack.</Text>
-        <Pressable
-          style={styles.button}
-          testID="open-class-detail-button"
-          onPress={() =>
-            navigation.navigate(ClassRoutes.ClassDetail, { classId: 'cs-101' })
-          }
-        >
-          <Text style={styles.buttonText}>Open class</Text>
-        </Pressable>
+      <ScreenHeader
+        title="Classes"
+        subtitle="Your enrolled and teaching classes."
+      />
+      <View style={styles.actions}>
+        <Button
+          label="Join a class"
+          variant="secondary"
+          testID="classes-join-class"
+          onPress={() => navigation.navigate(ClassRoutes.JoinClass)}
+        />
+        <Button
+          label="Create a class"
+          testID="classes-create-class"
+          onPress={() => navigation.navigate(ClassRoutes.CreateClass)}
+        />
       </View>
+      {isLoading ? (
+        <View style={styles.centered}>
+          <ActivityIndicator color={theme.colors.primary} testID="classes-loading" />
+        </View>
+      ) : error ? (
+        <View style={styles.centered}>
+          <AppText variant="body" tone="danger">
+            {error}
+          </AppText>
+          <Button label="Retry" size="sm" testID="classes-retry" onPress={loadClasses} />
+        </View>
+      ) : classes.length === 0 ? (
+        <EmptyState
+          title="No classes yet"
+          description="Join with a teacher code or create a class to invite students."
+          testID="classes-empty"
+        />
+      ) : (
+        <ScrollView contentContainerStyle={styles.list}>
+          {classes.map((item) => (
+            <ListRow
+              key={item.id}
+              title={item.name}
+              subtitle={[item.subject, item.gradeLevel].filter(Boolean).join(' · ')}
+              testID={`class-row-${item.id}`}
+              onPress={() =>
+                navigation.navigate(ClassRoutes.ClassDetail, { classId: item.id })
+              }
+            />
+          ))}
+        </ScrollView>
+      )}
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: theme.colors.text,
-    fontSize: theme.typography.title,
-    fontWeight: '700',
+  actions: {
+    gap: spacing.sm,
+    marginTop: spacing.lg,
   },
-  description: {
-    marginTop: theme.spacing.sm,
-    color: theme.colors.textMuted,
-    fontSize: theme.typography.body,
-    lineHeight: 22,
+  centered: {
+    alignItems: 'center',
+    gap: spacing.md,
+    marginTop: spacing.xl,
   },
-  card: {
-    marginTop: theme.spacing.xl,
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: theme.spacing.lg,
-    gap: theme.spacing.sm,
-  },
-  cardTitle: {
-    color: theme.colors.text,
-    fontSize: theme.typography.subtitle,
-    fontWeight: '600',
-  },
-  cardText: {
-    color: theme.colors.textMuted,
-    fontSize: theme.typography.body,
-    lineHeight: 22,
-  },
-  button: {
-    alignSelf: 'flex-start',
-    backgroundColor: theme.colors.primary,
-    borderRadius: 10,
-    marginTop: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-  },
-  buttonText: {
-    color: theme.colors.surface,
-    fontSize: theme.typography.caption,
-    fontWeight: '700',
+  list: {
+    marginTop: spacing.lg,
+    paddingBottom: spacing.xl,
   },
 });
