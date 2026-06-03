@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react-native';
-import { WelcomeHeader } from '../../src/presentation/components/home/WelcomeHeader';
+import { WelcomeHeader } from '#features/home';
 
 describe('WelcomeHeader', () => {
   it('renders headline and subtitle', () => {

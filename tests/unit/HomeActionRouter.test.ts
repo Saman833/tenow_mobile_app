@@ -1,5 +1,5 @@
-import { TabRoutes } from '../../src/presentation/navigation/AppRoutes';
-import { HomeActionRouter } from '../../src/presentation/navigation/HomeActionRouter';
+import { TabRoutes } from '#app/navigation/AppRoutes';
+import { HomeActionRouter } from '#app/navigation/HomeActionRouter';
 
 describe('HomeActionRouter', () => {
   const router = new HomeActionRouter();

@@ -1,6 +1,5 @@
-import { AuthApi } from '../../src/infrastructure/api/AuthApi';
-import { BackendRoutes } from '../../src/infrastructure/api/BackendRoutes';
-import { HttpClient } from '../../src/infrastructure/api/HttpClient';
+import { AuthApi } from '#features/auth';
+import { BackendRoutes, HttpClient } from '#shared';
 
 describe('AuthApi', () => {
   const createApi = () => {

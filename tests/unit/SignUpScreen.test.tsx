@@ -1,7 +1,6 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import { AuthSessionService } from '../../src/application/AuthSessionService';
-import { UserRole } from '../../src/domain/entities/UserRole';
-import { SignUpScreen } from '../../src/presentation/screens/auth/SignUpScreen';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { SignUpScreen, type AuthSessionService } from '#features/auth';
+import { UserRole } from '#shared';
 
 describe('SignUpScreen', () => {
   it('submits signup with backend default role and authenticates', async () => {
@@ -18,10 +17,14 @@ describe('SignUpScreen', () => {
       />,
     );
 
-    fireEvent.changeText(screen.getByTestId('sign-up-name'), 'New User');
-    fireEvent.changeText(screen.getByTestId('sign-up-email'), 'new@tenow.test');
-    fireEvent.changeText(screen.getByTestId('sign-up-password'), 'password123');
-    fireEvent.press(screen.getByTestId('sign-up-submit'));
+    await act(async () => {
+      fireEvent.changeText(screen.getByTestId('sign-up-name'), 'New User');
+      fireEvent.changeText(screen.getByTestId('sign-up-email'), 'new@tenow.test');
+      fireEvent.changeText(screen.getByTestId('sign-up-password'), 'password123');
+    });
+    await act(async () => {
+      fireEvent.press(screen.getByTestId('sign-up-submit'));
+    });
 
     await waitFor(() => expect(onAuthenticated).toHaveBeenCalledTimes(1));
     expect(authSessionService.signUp).toHaveBeenCalledWith({

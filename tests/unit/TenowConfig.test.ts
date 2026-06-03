@@ -1,4 +1,4 @@
-import { TenowConfig } from '../../src/core/config/TenowConfig';
+import { TenowConfig } from '#shared';
 
 describe('TenowConfig', () => {
   it('strips trailing slashes from the API base URL', () => {

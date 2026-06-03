@@ -7,9 +7,18 @@
       "node"
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "#shared": ["./src/shared/index.ts"],
+      "#shared/*": ["./src/shared/*"],
+      "#app": ["./src/app/index.ts"],
+      "#app/*": ["./src/app/*"],
+      "#features/auth": ["./src/features/auth/index.ts"],
+      "#features/auth/*": ["./src/features/auth/*"],
+      "#features/home": ["./src/features/home/index.ts"],
+      "#features/home/*": ["./src/features/home/*"],
+      "#features/classes": ["./src/features/classes/index.ts"],
+      "#features/classes/*": ["./src/features/classes/*"],
+      "#features/settings": ["./src/features/settings/index.ts"],
+      "#features/settings/*": ["./src/features/settings/*"]
     }
   },
   "include": [

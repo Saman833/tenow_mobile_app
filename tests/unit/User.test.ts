@@ -1,4 +1,4 @@
-import { User, UserRole } from '../../src/domain/entities/UserRole';
+import { User, UserRole } from '#shared';
 
 describe('User', () => {
   it('identifies teacher and student roles', () => {

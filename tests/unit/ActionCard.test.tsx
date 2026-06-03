@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { ActionCard } from '../../src/presentation/components/home/ActionCard';
+import { ActionCard } from '#features/home';
 
 describe('ActionCard', () => {
   it('renders title and description', () => {

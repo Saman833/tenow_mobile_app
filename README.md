@@ -79,11 +79,9 @@ Point the mobile app at your local API base URL (configure in app env when wired
 
 ```
 src/
-  application/     AppBootstrap, ServiceContainer (DI)
-  core/            TenowConfig, AppError
-  domain/          User entity, UserRole
-  infrastructure/  HttpClient
-  presentation/    screens, components, theme
+  app/             composition root: bootstrap, DI, navigation
+  features/        auth, home, classes, settings (each exports index.ts)
+  shared/          #shared — config, api, theme, layout, domain types
 tests/
   smoke/           fast render and wiring checks
   unit/            domain and infrastructure tests
