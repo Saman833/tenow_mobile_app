@@ -19,7 +19,7 @@ export class TenowConfig {
     return new TenowConfig({
       appName: 'TeNow',
       tagline: 'AI-native learning for teachers and students',
-      apiBaseUrl: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000',
+      apiBaseUrl: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000',
     });
   }
 

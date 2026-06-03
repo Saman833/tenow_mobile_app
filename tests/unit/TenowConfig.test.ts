@@ -19,5 +19,16 @@ describe('TenowConfig', () => {
 
     expect(config.appName).toBe('TeNow');
     expect(config.tagline).toContain('AI-native');
+    expect(config.apiBaseUrl).toBe('http://localhost:4000');
+  });
+
+  it('uses Expo public API URL when provided', () => {
+    process.env.EXPO_PUBLIC_API_URL = 'http://192.168.1.20:4000/';
+
+    const config = TenowConfig.createDefault();
+
+    expect(config.apiBaseUrl).toBe('http://192.168.1.20:4000');
+
+    delete process.env.EXPO_PUBLIC_API_URL;
   });
 });
