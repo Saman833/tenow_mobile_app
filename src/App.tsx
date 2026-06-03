@@ -1,15 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppBootstrap } from './application/AppBootstrap';
-import { HomeScreen } from './presentation/screens/home/HomeScreen';
+import { RootNavigator } from './presentation/navigation/RootNavigator';
 
 export default function App() {
   const bootstrap = AppBootstrap.initialize();
-  const viewModel = bootstrap.container.createHomeViewModel();
 
   return (
     <SafeAreaProvider>
-      <HomeScreen viewModel={viewModel} />
+      <RootNavigator container={bootstrap.container} />
       <StatusBar style="dark" />
     </SafeAreaProvider>
   );
