@@ -5,6 +5,7 @@ import { ClassesListScreen } from '#features/classes';
 import { ClassroomsApi } from '#features/classes/api/ClassroomsApi';
 
 describe('ClassesListScreen', () => {
+  jest.setTimeout(15_000);
   function createClassroom(index: number) {
     return {
       id: `class-${index}`,

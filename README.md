@@ -1,6 +1,6 @@
 # TeNow Mobile
 
-The mobile app for [TeNow](https://github.com/) - an AI-native learning platform for high school and university teachers and students.
+The mobile app for TeNow - an AI-native learning platform for high school and university teachers and students.
 
 ---
 
@@ -33,7 +33,7 @@ New team members should be able to run the app with these steps.
 
 **Prerequisites**
 
-- Node.js and npm
+- Node.js 24 and npm (see `.nvmrc`)
 - Expo Go on a physical device, or an Android/iOS simulator
 - Git
 
@@ -67,9 +67,7 @@ EXPO_PUBLIC_API_URL=http://YOUR_LAN_IP:4000
 **Validate and run**
 
 ```bash
-npx expo-doctor
-npx tsc --noEmit
-npx jest --ci
+npm run verify   # expo-doctor + typecheck + tests (same as CI)
 npx expo start
 ```
 
@@ -79,13 +77,80 @@ This repo includes `.npmrc` with `legacy-peer-deps=true` so `npm install` matche
 
 ---
 
-## Rules and considerations
+## CI/CD
 
-- Keep application code in `src/` and organize it by feature modlets, not by layer-based folders.
-- Keep navigation separate from screen rendering and business logic.
-- Import shared and cross-feature code only through public entrypoints (`#shared`, `#features/*`).
-- Abstract device and platform APIs in `#shared`; inject dependencies through `ServiceContainer`.
-- Update tests with behavior changes and validate with `npx jest --ci`, `npx tsc --noEmit`, and `npx expo-doctor`.
+GitHub Actions workflow: `.github/workflows/verify-and-build.yaml`
+
+**CI (on every push and pull request)**
+
+- `npm ci`
+- `npx expo-doctor`
+- `npm run lint-typecheck`
+- `npm run test:ci`
+
+**CD (manual)**
+
+From the GitHub Actions tab, run **Verify and Build** with `workflow_dispatch`. After verify passes, the workflow builds a Docker image and pushes it to GitHub Container Registry (`ghcr.io/<owner>/<repo>:latest`).
+
+Node version is pinned in `.nvmrc` (24).
+
+---
+
+## Docker (web)
+
+Build and serve the exported web app with nginx:
+
+```bash
+docker build -t tenow-mobile .
+docker run -p 8080:80 tenow-mobile
+```
+
+Open http://localhost:8080. The API URL is set at image build time via `EXPO_PUBLIC_API_URL` (see `Dockerfile`).
+
+To build the web bundle without Docker:
+
+```bash
+npm run build:web
+```
+
+---
+
+## Rules and considerations for new collaborators
+
+Read this before your first PR. The rules below match what `tests/unit/architecture.test.ts` enforces.
+
+**Architecture**
+
+- Put application code under `src/` and organize by **feature modlets** (`auth`, `home`, `classes`, `settings`, `orgs`), not by layer folders like `presentation/` or `infrastructure/`.
+- `src/app` is the composition root: bootstrap, `ServiceContainer`, and navigation only.
+- `src/shared` (`#shared`) holds cross-cutting code: API clients, design-system components, config, and device abstractions.
+- Each feature exposes a public `index.ts`. Import another feature only via `#features/<name>` — never deep-import another feature’s internal files.
+- Keep navigation in `src/app/navigation`. Screens receive APIs and services as props; they should not construct HTTP clients or read platform modules directly.
+- Wire dependencies in `ServiceContainer` and pass them into navigators/screens. Do not import `expo-*` device modules from `src/features`; wrap them in `#shared` first (see `ClipboardAccess`).
+
+**UI**
+
+- Reuse design-system primitives from `#shared` (`Button`, `AppText`, `ScreenContainer`, `ListRow`, etc.) instead of one-off styled components.
+- Follow existing screen patterns: header, loading, empty, and error states should look and behave like current feature screens.
+
+**Testing**
+
+- Add or update tests when behavior changes. Prefer unit tests for APIs, view models, and abstractions; screen tests for user-visible flows.
+- Run `npm run verify` before opening a PR (same checks as CI).
+- Architecture boundaries are tested automatically — broken imports or `expo-*` usage in features will fail the build.
+
+**Git and workflow**
+
+- Work on a feature branch; open a PR against `master`.
+- Keep commits focused. Write messages that explain *why*, not just what changed.
+- Do not commit secrets. `.env.local` in this repo points at the shared Railway API; use your own values only for local overrides.
+- Push early so CI runs on your branch. Fix failing checks before requesting review.
+
+**Expo and dependencies**
+
+- This project targets **Expo SDK 56**. Check the [v56 docs](https://docs.expo.dev/versions/v56.0.0/) before adding packages or APIs.
+- Use `npm install` (with the repo’s `.npmrc`) so peer dependencies resolve the same way for everyone.
+- After dependency changes, run `npx expo-doctor` and update tests if needed.
 
 **AI use**
 
@@ -99,16 +164,25 @@ This repo includes `.npmrc` with `legacy-peer-deps=true` so `npm install` matche
 ## Project structure
 
 ```
-src/
-  app/             composition root: bootstrap, DI, navigation
-  features/        auth, home, classes, settings, orgs (each exports index.ts)
-  shared/          #shared — config, api, design-system tokens/components
-tests/
-  smoke/           fast render and wiring checks
-  unit/            domain and infrastructure tests
-e2e/
-  web/             Playwright end-to-end (web target)
-  maestro/         Maestro flows for Expo Go / device
+tenow_mobile/
+  src/
+    app/
+    features/
+      auth/
+      home/
+      classes/
+      orgs/
+      settings/
+    shared/
+  tests/
+    smoke/
+    unit/
+  e2e/
+    web/
+    maestro/
+  assets/
+  docker/
+  .github/
 ```
 
 ---
@@ -138,4 +212,5 @@ Current features include:
 - FlatList class list with pull-to-refresh and end-reached loading.
 - Shared design-system primitives and screen patterns.
 - Unit and smoke tests for navigation, APIs, device abstractions, and screen behavior.
+- GitHub Actions CI and Docker-based web deployment.
 

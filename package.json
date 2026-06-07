@@ -36,11 +36,15 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "lint-typecheck": "tsc --noEmit",
     "test": "jest",
+    "test:ci": "jest --ci",
     "test:smoke": "jest --testPathPattern=smoke",
     "test:coverage": "jest --coverage",
     "test:e2e": "playwright test -c e2e/web/playwright.config.ts",
-    "test:e2e:mobile": "maestro test e2e/maestro"
+    "test:e2e:mobile": "maestro test e2e/maestro",
+    "build:web": "expo export --platform web",
+    "verify": "npx expo-doctor && npm run lint-typecheck && npm run test:ci"
   },
   "jest": {
     "preset": "jest-expo",

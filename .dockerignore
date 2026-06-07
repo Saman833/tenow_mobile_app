@@ -1,0 +1,12 @@
+node_modules
+.expo
+dist
+web-build
+coverage
+playwright-report
+test-results
+.git
+.github
+*.md
+.env
+.env*.local
