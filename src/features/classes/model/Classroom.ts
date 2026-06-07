@@ -4,6 +4,7 @@ export interface Classroom {
   readonly subject: string;
   readonly gradeLevel: string;
   readonly currentUserRole?: string;
+  readonly joinCode?: string;
 }
 
 export interface CreateClassroomInput {

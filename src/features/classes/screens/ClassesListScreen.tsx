@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   AppText,
@@ -18,6 +18,9 @@ import {
 import { ClassroomsApi } from '../api/ClassroomsApi';
 import { Classroom } from '../model/Classroom';
 
+const INITIAL_CLASS_LIMIT = 10;
+const CLASS_PAGE_SIZE = 10;
+
 type ClassesListScreenProps = NativeStackScreenProps<
   ClassesStackParamList,
   typeof ClassRoutes.ClassList
@@ -30,6 +33,8 @@ export function ClassesListScreen({
   classroomsApi,
 }: ClassesListScreenProps) {
   const [classes, setClasses] = useState<Classroom[]>([]);
+  const [visibleClassCount, setVisibleClassCount] =
+    useState(INITIAL_CLASS_LIMIT);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,6 +45,7 @@ export function ClassesListScreen({
     try {
       const result = await classroomsApi.listMine();
       setClasses(result);
+      setVisibleClassCount(INITIAL_CLASS_LIMIT);
     } catch {
       setError('Unable to load classes. Pull to retry.');
     } finally {
@@ -50,6 +56,16 @@ export function ClassesListScreen({
   useEffect(() => {
     loadClasses();
   }, [loadClasses]);
+
+  const handleEndReached = useCallback(() => {
+    setVisibleClassCount((count) =>
+      Math.min(count + CLASS_PAGE_SIZE, classes.length),
+    );
+  }, [classes.length]);
+
+  const visibleClasses = classes.slice(0, visibleClassCount);
+  const hasMoreClasses = visibleClassCount < classes.length;
+  const isInitialLoading = isLoading && classes.length === 0;
 
   return (
     <ScreenContainer testID="classes-list-screen">
@@ -70,7 +86,7 @@ export function ClassesListScreen({
           onPress={() => navigation.navigate(ClassRoutes.CreateClass)}
         />
       </View>
-      {isLoading ? (
+      {isInitialLoading ? (
         <View style={styles.centered}>
           <ActivityIndicator color={theme.colors.primary} testID="classes-loading" />
         </View>
@@ -81,17 +97,26 @@ export function ClassesListScreen({
           </AppText>
           <Button label="Retry" size="sm" testID="classes-retry" onPress={loadClasses} />
         </View>
-      ) : classes.length === 0 ? (
-        <EmptyState
-          title="No classes yet"
-          description="Join with a teacher code or create a class to invite students."
-          testID="classes-empty"
-        />
       ) : (
-        <ScrollView contentContainerStyle={styles.list}>
-          {classes.map((item) => (
+        <FlatList
+          data={visibleClasses}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.list}
+          initialNumToRender={visibleClasses.length}
+          refreshing={isLoading}
+          testID="classes-flat-list"
+          ListEmptyComponent={
+            <EmptyState
+              title="No classes yet"
+              description="Join with a teacher code or create a class to invite students."
+              testID="classes-empty"
+            />
+          }
+          onEndReached={hasMoreClasses ? handleEndReached : undefined}
+          onEndReachedThreshold={0.4}
+          onRefresh={loadClasses}
+          renderItem={({ item }) => (
             <ListRow
-              key={item.id}
               title={item.name}
               subtitle={[item.subject, item.gradeLevel].filter(Boolean).join(' · ')}
               testID={`class-row-${item.id}`}
@@ -99,8 +124,8 @@ export function ClassesListScreen({
                 navigation.navigate(ClassRoutes.ClassDetail, { classId: item.id })
               }
             />
-          ))}
-        </ScrollView>
+          )}
+        />
       )}
     </ScreenContainer>
   );

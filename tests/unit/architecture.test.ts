@@ -4,6 +4,7 @@ import * as path from 'node:path';
 const SRC_ROOT = path.join(__dirname, '../../src');
 const LEGACY_IMPORT_PATTERN =
   /(?:^|\/)(?:application|core|infrastructure|presentation)(?:\/|$)|domain\/entities/;
+const EXPO_DEVICE_IMPORT_PATTERN = /from\s+['"]expo-[^'"]+['"]/;
 
 const FEATURES = ['auth', 'home', 'classes', 'settings', 'orgs'] as const;
 
@@ -102,5 +103,23 @@ describe('modlet architecture boundaries', () => {
 
   it('exposes shared resources through #shared entrypoint', () => {
     expect(fs.existsSync(path.join(SRC_ROOT, 'shared', 'index.ts'))).toBe(true);
+  });
+
+  it('keeps expo device modules inside shared abstractions', () => {
+    const offenders = sourceFiles.flatMap((filePath) => {
+      const relativePath = path.relative(SRC_ROOT, filePath).replace(/\\/g, '/');
+
+      if (!relativePath.startsWith('features/')) {
+        return [];
+      }
+
+      const content = fs.readFileSync(filePath, 'utf8');
+
+      return EXPO_DEVICE_IMPORT_PATTERN.test(content)
+        ? [relativePath]
+        : [];
+    });
+
+    expect(offenders).toEqual([]);
   });
 });

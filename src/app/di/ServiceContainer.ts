@@ -4,6 +4,8 @@ import { HomeViewModel } from '#features/home';
 import { OrganizationsApi, CreateOrganizationViewModel } from '#features/orgs';
 import {
   BackendRoutes,
+  ClipboardAccess,
+  ExpoClipboardAccess,
   HttpClient,
   SecureAuthTokenStore,
   TenowConfig,
@@ -17,6 +19,7 @@ export class ServiceContainer {
   readonly authSessionService: AuthSessionService;
   readonly classroomsApi: ClassroomsApi;
   readonly organizationsApi: OrganizationsApi;
+  readonly clipboard: ClipboardAccess;
 
   private readonly tokenStore: SecureAuthTokenStore;
 
@@ -24,6 +27,7 @@ export class ServiceContainer {
     this.config = config;
     this.backendRoutes = new BackendRoutes();
     this.tokenStore = new SecureAuthTokenStore();
+    this.clipboard = new ExpoClipboardAccess();
     this.httpClient = new HttpClient(config.apiBaseUrl, () =>
       this.tokenStore.getToken(),
     );

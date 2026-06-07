@@ -4,6 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   AppText,
   Button,
+  ClipboardAccess,
   EmptyState,
   ScreenContainer,
   ScreenHeader,
@@ -22,12 +23,14 @@ type ClassDetailScreenProps = NativeStackScreenProps<
   typeof ClassRoutes.ClassDetail
 > & {
   classroomsApi: ClassroomsApi;
+  clipboard: ClipboardAccess;
 };
 
 export function ClassDetailScreen({
   navigation,
   route,
   classroomsApi,
+  clipboard,
 }: ClassDetailScreenProps) {
   const [classroom, setClassroom] = useState<Classroom | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -77,6 +80,20 @@ export function ClassDetailScreen({
               Your role: {classroom.currentUserRole}
             </AppText>
           ) : null}
+          {classroom.joinCode ? (
+            <View style={styles.joinCodeRow}>
+              <AppText variant="body" testID="class-join-code">
+                Class code: {classroom.joinCode}
+              </AppText>
+              <Button
+                label="Copy code"
+                size="sm"
+                variant="secondary"
+                testID="class-copy-code"
+                onPress={() => clipboard.writeText(classroom.joinCode!)}
+              />
+            </View>
+          ) : null}
           <EmptyState
             title="Assignments coming soon"
             description="Create, submit, and grade assignments will appear here in a future update."
@@ -102,5 +119,9 @@ const styles = StyleSheet.create({
   },
   role: {
     marginTop: spacing.sm,
+  },
+  joinCodeRow: {
+    gap: spacing.sm,
+    marginTop: spacing.md,
   },
 });

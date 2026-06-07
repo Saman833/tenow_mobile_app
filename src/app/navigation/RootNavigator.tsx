@@ -290,6 +290,7 @@ function ClassesNavigator({ container, routeRegistry }: ClassesNavigatorProps) {
           <ClassDetailScreen
             {...props}
             classroomsApi={container.classroomsApi}
+            clipboard={container.clipboard}
           />
         )}
       </ClassesStack.Screen>
@@ -303,7 +304,11 @@ function ClassesNavigator({ container, routeRegistry }: ClassesNavigatorProps) {
       </ClassesStack.Screen>
       <ClassesStack.Screen name={ClassRoutes.JoinClass}>
         {(props) => (
-          <JoinClassScreen {...props} classroomsApi={container.classroomsApi} />
+          <JoinClassScreen
+            {...props}
+            classroomsApi={container.classroomsApi}
+            clipboard={container.clipboard}
+          />
         )}
       </ClassesStack.Screen>
     </ClassesStack.Navigator>

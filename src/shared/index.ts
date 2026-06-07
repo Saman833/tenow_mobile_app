@@ -12,6 +12,10 @@ export {
   type AuthTokenStore,
 } from './auth/AuthTokenStore';
 export {
+  ExpoClipboardAccess,
+  type ClipboardAccess,
+} from './clipboard/ClipboardAccess';
+export {
   AppText,
   Button,
   TextInput,
