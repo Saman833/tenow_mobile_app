@@ -1,77 +1,98 @@
 # TeNow Mobile
 
-The mobile app for [TeNow](https://github.com/) — an **AI-native learning platform** for high school and university teachers and students.
-
-TeNow is not a bolt-on AI button on top of a legacy LMS. It is built around a single conversation engine that powers two profiles:
-
-- **Class TA** — a knowledge-base-grounded assistant for students, with per-assignment AI policies (from closed-book to open-with-disclosure).
-- **Teacher Assistant** — rubric-aligned feedback drafts, assignment and rubric generation, announcements, and class insights for educators.
-
-The platform treats **transparent AI use and process tracking** as the integrity model: version history, chat trails, and AI-use disclosure on every submission — not AI-detection verdicts.
+The mobile app for [TeNow](https://github.com/) - an AI-native learning platform for high school and university teachers and students.
 
 ---
 
 ## What this app is for
 
-`tenow_mobile` is the native companion to the TeNow web product (`apps/frontend` in the main monorepo). It is aimed at the workflows that benefit most from a phone or tablet:
-
-| Audience | Mobile use cases |
-|---|---|
-| **Students** | Chat with the Class TA, check assignments and deadlines, submit work, review rubric feedback, study with practice and reverse-outline intents |
-| **Teachers** | Skim submissions, approve AI-suggested feedback, post announcements, glance at misconception clusters between classes |
-
-STEM-heavy classes (math, CS, physics, lab sciences) are the first wedge — the same focus as the broader TeNow product.
-
----
-
-## Relationship to the main repo
-
-This directory lives alongside the TeNow monorepo. The backend API, shared contracts, and web app live in the parent project:
-
-| Component | Path |
-|---|---|
-| API (NestJS) | `../apps/backend` |
-| Web app (Next.js) | `../apps/frontend` |
-| Evaluation worker | `../apps/worker` |
-| Shared types / validation | `../packages/shared` |
-| Product strategy | `../docs/tenow-strategy.md` |
-
-The mobile app will consume the same authenticated REST API as the web frontend.
+`tenow_mobile` is the native companion app for TeNow classrooms. It helps teachers and students handle the mobile parts of class setup and access: signing in, creating or joining organizations, viewing classes, creating classes, joining by class code, and opening class details. The mobile app is useful because these workflows often happen away from a desktop, especially when a teacher shares a class code and students need to join quickly from their phones.
 
 ---
 
 ## Tech stack
 
-- [Expo](https://expo.dev) (SDK 56+) — React Native
-- TypeScript
-- Targets iOS, Android, and web via Expo
+TeNow Mobile is an Expo SDK 56 React Native app written in TypeScript. The app is organized by feature modlets under `src/features`, with app composition and navigation under `src/app`, and shared API, device, design-system, and domain utilities under `src/shared`. It uses React Navigation for stack and tab routing, a `ServiceContainer` for dependency wiring, REST API clients for backend communication, Expo SecureStore for auth token persistence, and Expo Clipboard for class-code copy/paste. Tests use Jest, `jest-expo`, and React Native Testing Library.
 
-See [Expo SDK 56 docs](https://docs.expo.dev/versions/v56.0.0/) before making changes — Expo APIs are version-specific.
+Important stack pieces:
+
+- Expo SDK 56 / React Native
+- TypeScript
+- React Navigation
+- Expo SecureStore
+- Expo Clipboard
+- Jest, `jest-expo`, and React Native Testing Library
+- TeNow backend REST API
+- Railway-hosted API for shared development
 
 ---
 
 ## Getting started
 
-From this directory:
+New team members should be able to run the app with these steps.
+
+**Prerequisites**
+
+- Node.js and npm
+- Expo Go on a physical device, or an Android/iOS simulator
+- Git
+
+**Setup**
 
 ```bash
+git clone https://github.com/Saman833/tenow_mobile_app.git
+cd tenow_mobile
 npm install
+```
+
+Create or update `.env.local` with the backend API URL:
+
+```bash
+EXPO_PUBLIC_API_URL=https://tenow-server-production.up.railway.app
+```
+
+If you run your own backend instead, use the URL your device can reach:
+
+```bash
+# Android emulator
+EXPO_PUBLIC_API_URL=http://10.0.2.2:4000
+
+# Web/local dev on the same machine
+EXPO_PUBLIC_API_URL=http://localhost:4000
+
+# Real phone on Wi-Fi
+EXPO_PUBLIC_API_URL=http://YOUR_LAN_IP:4000
+```
+
+**Validate and run**
+
+```bash
+npx expo-doctor
+npx tsc --noEmit
+npx jest --ci
 npx expo start
 ```
 
-Then press `i` for the iOS simulator, `a` for Android, or scan the QR code with Expo Go on a device.
+Press `i` for the iOS simulator, `a` for Android, `w` for web, or scan the QR code with Expo Go on a device.
 
-For a local backend during development, run the TeNow stack from the repo root:
+This repo includes `.npmrc` with `legacy-peer-deps=true` so `npm install` matches the Expo dependency setup used in development.
 
-```bash
-cd ..
-docker compose up -d postgres redis minio
-npm install
-npm run migration:run -w apps/backend
-npm run start:dev -w apps/backend
-```
+---
 
-Point the mobile app at your local API base URL (configure in app env when wired up).
+## Rules and considerations
+
+- Keep application code in `src/` and organize it by feature modlets, not by layer-based folders.
+- Keep navigation separate from screen rendering and business logic.
+- Import shared and cross-feature code only through public entrypoints (`#shared`, `#features/*`).
+- Abstract device and platform APIs in `#shared`; inject dependencies through `ServiceContainer`.
+- Update tests with behavior changes and validate with `npx jest --ci`, `npx tsc --noEmit`, and `npx expo-doctor`.
+
+**AI use**
+
+- AI may be used before committing to review code, catch bugs, and improve test coverage.
+- AI is appropriate for helping write or refine tests, but every test should still reflect real app behavior.
+- Do not use AI to write core business logic, domain models, or service-layer code. Those parts should be understood and owned by the developer.
+- If AI assistance is not intended for a task, disable related assistant features in the editor settings before working.
 
 ---
 
@@ -108,10 +129,13 @@ Coverage thresholds are enforced at 70% lines/functions/statements and 60% branc
 
 ## Project status
 
-Early scaffold. Core screens — auth, class list, assignment detail, Class TA chat, submission flow — are not yet implemented. Product scope follows **Tier 1** in `docs/tenow-strategy.md`: essay submissions with process trail, Class TA with AI policy enforcement, and rubric-aligned feedback surfaces.
+Current features include:
 
----
+- Auth screens wired to the backend API with secure token storage.
+- Organization creation and active organization refresh after setup.
+- Classes tab with API-backed class listing, class detail, create class, and join class flows.
+- Clipboard device feature for copying and pasting class join codes.
+- FlatList class list with pull-to-refresh and end-reached loading.
+- Shared design-system primitives and screen patterns.
+- Unit and smoke tests for navigation, APIs, device abstractions, and screen behavior.
 
-## Positioning (one line)
-
-> TeNow is teacher-controlled, AI-native classroom support where students get guided help grounded in the syllabus — and teachers get evidence of progress, not a black-box answer machine.
