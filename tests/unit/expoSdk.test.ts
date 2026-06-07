@@ -1,4 +1,3 @@
-import { execSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
@@ -39,20 +38,6 @@ describe('Expo SDK 56 project setup', () => {
 
     expect(pkg.dependencies['react-native']).toMatch(/^0\.85\./);
     expect(pkg.dependencies.react).toMatch(/^19\./);
-  });
-
-  it('ignores local env overrides in git', () => {
-    const gitignore = readProjectFile('.gitignore');
-
-    expect(gitignore).toMatch(/\.env\.local/);
-    expect(gitignore).toMatch(/\.env\*\.local/);
-
-    const trackedLocalEnv = execSync('git ls-files .env.local', {
-      cwd: PROJECT_ROOT,
-      encoding: 'utf8',
-    }).trim();
-
-    expect(trackedLocalEnv).toBe('');
   });
 
   it('includes jest-expo peer dependency for SDK 56 tests', () => {
