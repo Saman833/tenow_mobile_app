@@ -1,9 +1,19 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { FlatList } from 'react-native';
 import { ClassRoutes } from '#app/navigation/AppRoutes';
 import { ClassesListScreen } from '#features/classes';
 import { ClassroomsApi } from '#features/classes/api/ClassroomsApi';
 
 describe('ClassesListScreen', () => {
+  function createClassroom(index: number) {
+    return {
+      id: `class-${index}`,
+      name: `CS ${index}`,
+      subject: 'Computer Science',
+      gradeLevel: 'Grade 10',
+    };
+  }
+
   it('renders classes from the API', async () => {
     const classroomsApi = {
       listMine: jest.fn().mockResolvedValue([
@@ -106,5 +116,58 @@ describe('ClassesListScreen', () => {
 
     expect(navigate).toHaveBeenCalledWith(ClassRoutes.JoinClass);
     expect(navigate).toHaveBeenCalledWith(ClassRoutes.CreateClass);
+  });
+
+  it('refreshes the class list from FlatList pull-to-refresh', async () => {
+    const classroomsApi = {
+      listMine: jest
+        .fn()
+        .mockResolvedValueOnce([createClassroom(1)])
+        .mockResolvedValueOnce([createClassroom(2)]),
+    } as unknown as ClassroomsApi;
+
+    render(
+      <ClassesListScreen
+        classroomsApi={classroomsApi}
+        navigation={{ navigate: jest.fn() } as never}
+        route={{ params: undefined } as never}
+      />,
+    );
+
+    await waitFor(() => expect(screen.getByText('CS 1')).toBeTruthy());
+
+    await act(async () => {
+      fireEvent(screen.getByTestId('classes-flat-list'), 'refresh');
+    });
+
+    await waitFor(() => expect(screen.getByText('CS 2')).toBeTruthy());
+    expect(classroomsApi.listMine).toHaveBeenCalledTimes(2);
+  });
+
+  it('shows more loaded classes when the FlatList reaches the end', async () => {
+    const classroomsApi = {
+      listMine: jest
+        .fn()
+        .mockResolvedValue(
+          Array.from({ length: 11 }, (_, index) => createClassroom(index + 1)),
+        ),
+    } as unknown as ClassroomsApi;
+
+    const { UNSAFE_getByType } = render(
+      <ClassesListScreen
+        classroomsApi={classroomsApi}
+        navigation={{ navigate: jest.fn() } as never}
+        route={{ params: undefined } as never}
+      />,
+    );
+
+    await waitFor(() => expect(screen.getByText('CS 10')).toBeTruthy());
+    expect(screen.queryByText('CS 11')).toBeNull();
+
+    await act(async () => {
+      UNSAFE_getByType(FlatList).props.onEndReached();
+    });
+
+    await waitFor(() => expect(screen.getByText('CS 11')).toBeTruthy());
   });
 });

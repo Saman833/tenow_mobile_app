@@ -18,5 +18,6 @@ describe('ServiceContainer smoke', () => {
     expect(container.backendRoutes.authLogin).toBe('/auth/login');
     expect(container.authSessionService).toBeDefined();
     expect(container.classroomsApi).toBeDefined();
+    expect(container.clipboard).toBeDefined();
   });
 });
