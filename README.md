@@ -45,10 +45,10 @@ cd tenow_mobile
 npm install
 ```
 
-Create or update `.env.local` with the backend API URL:
+Copy `.env.example` to `.env.local` and set the backend API URL:
 
 ```bash
-EXPO_PUBLIC_API_URL=https://tenow-server-production.up.railway.app
+cp .env.example .env.local
 ```
 
 If you run your own backend instead, use the URL your device can reach:
@@ -143,7 +143,7 @@ Read this before your first PR. The rules below match what `tests/unit/architect
 
 - Work on a feature branch; open a PR against `master`.
 - Keep commits focused. Write messages that explain *why*, not just what changed.
-- Do not commit secrets. `.env.local` in this repo points at the shared Railway API; use your own values only for local overrides.
+- Do not commit secrets. Copy `.env.example` to `.env.local` for local API URL overrides.
 - Push early so CI runs on your branch. Fix failing checks before requesting review.
 
 **Expo and dependencies**

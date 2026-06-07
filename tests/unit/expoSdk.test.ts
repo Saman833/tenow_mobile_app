@@ -60,6 +60,12 @@ describe('Expo SDK 56 project setup', () => {
     expect(envExample).toContain('EXPO_PUBLIC_API_URL');
   });
 
+  it('ignores local env files in .gitignore', () => {
+    const gitignore = readProjectFile('.gitignore');
+
+    expect(gitignore).toMatch(/\.env\*\.local/);
+  });
+
   it('configures app.json for Expo SDK 56 plugins', () => {
     const appJson = readJson<{
       expo: { plugins?: string[]; android?: { package?: string } };
