@@ -106,9 +106,25 @@ Coverage thresholds are enforced at 70% lines/functions/statements and 60% branc
 
 ---
 
+## AI use note
+
+AI assistance was used only as a pre-commit review aid for finding bugs and checking implementation quality. App features, tests, and final commits remain reviewed and owned by the project author.
+
+If AI assistance is not intended for a task, disable the related assistant features in the editor settings before working.
+
+---
+
 ## Project status
 
-Early scaffold. Core screens — auth, class list, assignment detail, Class TA chat, submission flow — are not yet implemented. Product scope follows **Tier 1** in `docs/tenow-strategy.md`: essay submissions with process trail, Class TA with AI policy enforcement, and rubric-aligned feedback surfaces.
+Current mobile features include:
+
+- Auth screens wired to the backend API with secure token storage.
+- Organization creation and active organization refresh after setup.
+- Classes tab with API-backed class listing, class detail, create class, and join class flows.
+- Clipboard device feature for copying and pasting class join codes.
+- FlatList class list with pull-to-refresh and end-reached loading.
+- Shared design system primitives and patterns for consistent screens.
+- Unit and smoke tests for navigation, APIs, device abstractions, and screen behavior.
 
 ---
 

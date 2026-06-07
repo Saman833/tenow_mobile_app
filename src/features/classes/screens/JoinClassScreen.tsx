@@ -4,6 +4,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   AppText,
   Button,
+  ClipboardAccess,
   FormField,
   ScreenContainer,
   ScreenHeader,
@@ -20,15 +21,25 @@ type JoinClassScreenProps = NativeStackScreenProps<
   typeof ClassRoutes.JoinClass
 > & {
   classroomsApi: ClassroomsApi;
+  clipboard: ClipboardAccess;
 };
 
 export function JoinClassScreen({
   navigation,
   classroomsApi,
+  clipboard,
 }: JoinClassScreenProps) {
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handlePaste = async () => {
+    const text = await clipboard.readText();
+
+    if (text) {
+      setCode(text.trim().toUpperCase().slice(0, 20));
+    }
+  };
 
   const handleSubmit = async () => {
     setError(null);
@@ -61,6 +72,12 @@ export function JoinClassScreen({
           testID="join-class-code"
           value={code}
           onChangeText={(value) => setCode(value.toUpperCase())}
+        />
+        <Button
+          label="Paste code"
+          variant="secondary"
+          testID="join-class-paste"
+          onPress={handlePaste}
         />
         {error ? (
           <AppText variant="caption" tone="danger">
